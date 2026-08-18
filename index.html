@@ -3,245 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ELIMAR INVENTARIOS - TPV</title>
+    <title>ELIMAR POS - Full Experience</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* CSS INTERNO REFORZADO - ESTILO LOYVERSE PRO */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        :root { --blue: #2563eb; --dark: #0f172a; --bg: #f1f5f9; --border: #e2e8f0; --text: #334155; }
+        :root { --blue: #1e6fff; --dark: #0a0f1d; --bg: #f5f7fa; --border: #eef1f6; }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #333; height: 100vh; overflow: hidden; display: flex; }
 
-        /* Barra Lateral (PC) */
-        aside { width: 280px; background: var(--dark); flex-direction: column; padding: 20px; shrink-0; display: none; }
-        .sidebar-btn { width:100%; display:flex; align-items:center; gap:12px; padding:15px; border-radius:12px; color:#94a3b8; border:none; background:none; font-size:14px; font-weight:700; cursor:pointer; text-align:left; }
-        .sidebar-btn.active { background: #1e293b; color: white; border-left: 4px solid var(--blue); }
+        /* --- SIDEBAR (IMAGEN 1) --- */
+        #sidebar { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; transition: 0.3s; }
+        .sidebar-content { width: 280px; height: 100%; background: #0f172a; color: white; padding: 25px 0; display: flex; flex-direction: column; }
+        .side-header { padding: 0 25px 25px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: start; }
+        .user-section { padding: 20px 25px; display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 40px; height: 40px; background: #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .status-pill { background: #065f46; color: #34d399; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .side-menu { flex: 1; padding: 15px 10px; }
+        .side-item { width: 100%; display: flex; align-items: center; gap: 15px; padding: 14px 15px; color: #94a3b8; font-size: 14px; font-weight: 600; border: none; background: none; cursor: pointer; border-radius: 12px; margin-bottom: 5px; }
+        .side-item.active { background: #1e293b; color: white; border-left: 4px solid var(--blue); }
 
-        /* Contenedor Principal */
-        .app-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { height: 65px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink-0; }
+        /* --- HEADER (IMAGEN 2) --- */
+        .app-container { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { height: 65px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; shrink-0; }
+        .header-icons { display: flex; align-items: center; gap: 8px; }
+        .icon-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 8px; border-radius: 10px; color: #64748b; cursor: pointer; }
+
+        /* --- POS CONTENT --- */
         main { flex: 1; padding: 15px; overflow-y: auto; padding-bottom: 100px; }
-
-        /* Punto de Venta */
-        .search-bar { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .search-bar input { border: none; outline: none; width: 100%; font-weight: 600; }
-        .cat-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; }
-        .pill { padding: 8px 15px; border-radius: 20px; background: white; border: 1px solid var(--border); font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; }
-        .pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+        .search-area { display: flex; gap: 10px; margin-bottom: 15px; }
+        .search-input { flex: 1; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 40px; font-weight: 600; outline: none; }
+        
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
+        .cat-btn { padding: 8px 18px; border-radius: 20px; background: white; border: 1px solid var(--border); font-size: 11px; font-weight: 800; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .cat-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
 
         .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .prod-card { background: white; border-radius: 20px; padding: 12px; border: 1px solid #f1f5f9; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .prod-initial { aspect-ratio: 1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+        .prod-card { background: white; border-radius: 20px; padding: 15px; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .in-cart-badge { position: absolute; top: 15px; right: 15px; background: var(--blue); color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; }
+        .stock-tag { background: #f0fdf4; color: #16a34a; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 5px; }
 
-        /* Barra de Pago Movil */
-        .pay-bar { position: fixed; bottom: 80px; left: 15px; right: 15px; background: white; border-radius: 20px; padding: 15px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; }
-        .btn-pay { width: 100%; background: var(--blue); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 900; font-size: 14px; cursor: pointer; }
+        /* --- BARRA AZUL "VER TICKET" (IMAGEN 2) --- */
+        .ticket-bar { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--blue); color: white; border-radius: 18px; padding: 15px 20px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(30,111,255,0.4); z-index: 500; cursor: pointer; }
+        .count-circle { width: 30px; height: 30px; background: white; color: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-        /* Modales */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
-        .modal-body { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 25px; max-h: 92vh; overflow-y: auto; }
-        .input-box { margin-bottom: 15px; }
-        .input-box label { font-size: 10px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
-        .input-box input, .input-box select { width: 100%; padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; font-weight: 700; outline: none; }
-
-        /* Nav Movil */
-        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 25px; }
-        .m-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 9px; font-weight: 800; gap: 4px; }
-        .m-btn.active { color: var(--blue); }
-
-        @media (min-width: 1024px) { aside { display: flex; } .mobile-nav { display: none; } .modal { align-items: center; } .modal-body { border-radius: 30px; } }
+        @media (min-width: 1024px) { 
+            #sidebar { position: relative; display: block; background: none; }
+            .sidebar-content { box-shadow: 10px 0 30px rgba(0,0,0,0.05); }
+        }
     </style>
 </head>
 <body>
 
-    <aside>
-        <div style="display:flex; align-items:center; gap:12px; padding-bottom:25px; border-bottom:1px solid #1e293b; margin-bottom:20px;">
-            <div style="background:var(--blue); width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:900;">E</div>
-            <div><p style="color:white; font-weight:800; font-size:14px;">ELIMAR</p><p style="color:#64748b; font-size:9px; font-weight:700;">INVENTARIOS PRO</p></div>
-        </div>
-        <button onclick="nav('pos')" id="p-pos" class="sidebar-btn active"><i data-lucide="shopping-cart"></i> Punto de Venta</button>
-        <button onclick="nav('inv')" id="p-inv" class="sidebar-btn"><i data-lucide="package"></i> Stock & Prendas</button>
-        <button onclick="nav('reps')" id="p-reps" class="sidebar-btn"><i data-lucide="bar-chart-3"></i> Informes</button>
-        <button onclick="nav('conf')" id="p-conf" class="sidebar-btn" style="margin-top:auto;"><i data-lucide="settings"></i> Ajustes</button>
-    </aside>
+    <!-- SIDEBAR -->
+    <div id="sidebar" onclick="toggleSidebar(false)">
+        <div class="sidebar-content" onclick="event.stopPropagation()">
+            <div class="side-header">
+                <div>
+                    <h2 style="font-weight:900; font-size:18px;">ELIMAR</h2>
+                    <h2 style="font-weight:900; font-size:18px; line-height:0.8;">INVENTARIOS</h2>
+                    <p style="font-size:9px; color:#64748b; font-weight:700; margin-top:5px;">Sistema Punto de Venta</p>
+                </div>
+                <button onclick="toggleSidebar(false)" style="background:none; border:none; color:#64748b;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="user-section">
+                <div class="user-avatar">B</div>
+                <div>
+                    <p style="font-weight:800; font-size:13px;">BLOOD</p>
+                    <p style="font-size:10px; color:#64748b; font-weight:600; margin-bottom:4px;">Administrador</p>
+                    <div class="status-pill"><span style="width:5px; height:5px; background:#34d399; border-radius:50%;"></span> En línea</div>
+                </div>
+            </div>
 
-    <div class="app-main">
+            <nav class="side-menu">
+                <button class="side-item active" onclick="nav('pos')"><i data-lucide="shopping-cart" size="18"></i> Punto de Venta</button>
+                <button class="side-item" onclick="nav('inv')"><i data-lucide="box" size="18"></i> Inventario & Prendas</button>
+                <button class="side-item"><i data-lucide="ticket" size="18"></i> Historial Tickets</button>
+                <button class="side-item"><i data-lucide="users" size="18"></i> Clientes & Puntos</button>
+                <button class="side-item"><i data-lucide="bar-chart-3" size="18"></i> Informes & Ventas</button>
+                <button class="side-item" style="margin-top:auto;"><i data-lucide="settings" size="18"></i> Configuración</button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="app-container">
         <header>
-            <h2 id="v-title" style="font-weight:800; font-size:16px;">Ventas</h2>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div id="h-curr" style="background:#eff6ff; color:var(--blue); font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px;">COP ($)</div>
-                <div style="width:35px; height:35px; background:#f1f5f9; border-radius:10px; display:flex; align-items:center; justify-content:center;"><i data-lucide="user" size="18"></i></div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button onclick="toggleSidebar(true)" style="background:none; border:none;"><i data-lucide="menu"></i></button>
+                <h1 id="top-title" style="font-weight:900; font-size:16px;">POS</h1>
+            </div>
+            <div class="header-icons">
+                <div style="background:#f1f5f9; padding:5px 12px; border-radius:20px; font-size:10px; font-weight:900; color:#64748b; border:1px solid #eef1f6;">COP ($) <i data-lucide="chevron-down" size="12" style="display:inline; vertical-align:middle;"></i></div>
+                <div class="icon-btn"><i data-lucide="cloud" size="16"></i></div>
+                <div class="icon-btn"><i data-lucide="maximize" size="16"></i></div>
+                <div style="width:32px; height:32px; border-radius:50%; background:#ddd; overflow:hidden; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.1); ml-2">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky" style="width:100%">
+                </div>
             </div>
         </header>
 
-        <main id="v-content"></main>
+        <main id="app-content"></main>
 
-        <div id="pay-bar" class="pay-bar">
-            <div style="display:flex; justify-content:space-between; font-weight:900; font-size:18px;">
-                <span id="cart-count">0 prendas</span><span id="cart-total">$ 0</span>
+        <!-- BARRA AZUL (IMAGEN 2) -->
+        <div id="ticket-bar" class="ticket-bar" onclick="alert('Abriendo Ticket...')">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div class="count-circle" id="cart-count">0</div>
+                <span style="font-weight:800; font-size:14px;">Ver Ticket</span>
             </div>
-            <button onclick="openCheckout()" class="btn-pay">COBRAR</button>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:900; font-size:18px;" id="cart-total">$ 0</span>
+                <i data-lucide="chevron-up"></i>
+            </div>
         </div>
-
-        <nav class="mobile-nav">
-            <button onclick="nav('pos')" id="m-pos" class="m-btn active"><i data-lucide="shopping-cart"></i>VENTAS</button>
-            <button onclick="nav('inv')" id="m-inv" class="m-btn"><i data-lucide="package"></i>STOCK</button>
-            <button onclick="nav('reps')" id="m-reps" class="m-btn"><i data-lucide="bar-chart-3"></i>REPORTES</button>
-            <button onclick="nav('conf')" id="m-conf" class="m-btn"><i data-lucide="settings"></i>AJUSTES</button>
-        </nav>
     </div>
 
-    <!-- MODAL SISTEMA -->
-    <div id="modal-bg" class="modal"><div id="modal-container" class="modal-body"></div></div>
-
 <script>
-    // --- LÓGICA DE DATOS ---
-    const DB = {
-        save: (k,v) => localStorage.setItem('elimar_'+k, JSON.stringify(v)),
-        get: (k,d) => JSON.parse(localStorage.getItem('elimar_'+k)) || d,
-        init() {
-            if(!localStorage.getItem('elimar_conf')) this.save('conf', { store:"ELIMAR", curr:{code:'COP', s:'$'}, tax:19 });
-            if(!localStorage.getItem('elimar_prods')) this.save('prods', []);
-            if(!localStorage.getItem('elimar_cats')) this.save('cats', [{id:1, n:'Pijamas', c:'#3b82f6'}]);
-        }
+    // DATOS
+    const store = {
+        prods: [{id:1, n:"Pijama larga - M", p:35000, s:10, cat:"PIJAMA"}],
+        cart: []
     };
-    DB.init();
 
-    let cart = [];
-    let filterCat = 0;
-    const conf = DB.get('conf');
-    const fmt = (n) => `${conf.curr.s}${Math.round(n).toLocaleString()}`;
+    function toggleSidebar(open) {
+        document.getElementById('sidebar').style.display = open ? 'block' : 'none';
+    }
 
     function nav(v) {
-        const c = document.getElementById('v-content');
-        document.getElementById('v-title').innerText = v.toUpperCase();
-        document.querySelectorAll('.m-btn, .sidebar-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('m-'+v)?.classList.add('active');
-        document.getElementById('p-'+v)?.classList.add('active');
-
+        const c = document.getElementById('app-content');
         if(v==='pos') renderPOS(c);
         if(v==='inv') renderInv(c);
-        if(v==='conf') renderConf(c);
-        if(v==='reps') c.innerHTML = '<p style="text-align:center; padding:50px;">Reportes cargando...</p>';
+        toggleSidebar(false);
         lucide.createIcons();
     }
 
-    // --- POS ---
     function renderPOS(c) {
-        const prods = DB.get('prods');
-        const cats = DB.get('cats');
         c.innerHTML = `
-            <div class="search-bar"><i data-lucide="search" size="18"></i><input type="text" placeholder="Buscar prenda..."></div>
-            <div class="cat-pills">
-                <button class="pill active">Todo el Catálogo</button>
-                ${cats.map(cat => `<button class="pill">${cat.n}</button>`).join('')}
+            <div class="search-area">
+                <i data-lucide="search" size="18" style="position:absolute; left:30px; margin-top:12px; color:#94a3b8;"></i>
+                <input type="text" class="search-input" placeholder="Buscar prenda por nombre o SKU...">
+                <div class="icon-btn" style="background:white;"><i data-lucide="star" style="color:#f59e0b"></i></div>
+                <div class="icon-btn" style="background:white;"><i data-lucide="plus"></i></div>
+            </div>
+            <div class="cat-row">
+                <button class="cat-btn active">Todo el Catálogo (1)</button>
+                <button class="cat-btn">Camisetas & Polos (0)</button>
             </div>
             <div class="prod-grid">
-                ${prods.map(p => `
-                    <div class="prod-card" onclick="addCart(${p.id})">
-                        <div class="prod-initial" style="background:${p.col}15; color:${p.col}">${p.n[0]}</div>
-                        <p style="font-weight:700; font-size:11px;">${p.n}</p>
-                        <p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p>
-                    </div>
-                `).join('')}
+                <div class="prod-card" style="border:2px dashed #cbd5e1; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#94a3b8;">
+                    <i data-lucide="plus" size="32" style="color:var(--blue)"></i>
+                    <p style="font-weight:800; font-size:11px; margin-top:8px;">Venta Manual / Libre</p>
+                </div>
+                ${store.prods.map(p => {
+                    const count = store.cart.filter(x => x.id === p.id).length;
+                    return `
+                    <div class="prod-card" onclick="addToCart(${p.id})">
+                        ${count > 0 ? `<div class="in-cart-badge">${count} en carrito</div>` : ''}
+                        <div style="background:#e0f2fe; border-radius:15px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+                            <i data-lucide="shirt" style="color:var(--blue)" size="32"></i>
+                        </div>
+                        <p style="font-size:9px; font-weight:800; color:#94a3b8; text-transform:uppercase;">${p.cat}</p>
+                        <p style="font-weight:700; font-size:12px; margin:2px 0;">${p.n}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                            <span style="font-weight:900; color:var(--blue);">$ ${p.p.toLocaleString()}</span>
+                            <span class="stock-tag">Stock: ${p.s} uds</span>
+                        </div>
+                    </div>`;
+                }).join('')}
             </div>
         `;
-        updatePayBar();
     }
 
-    function addCart(id) {
-        const p = DB.get('prods').find(x => x.id === id);
-        if(p.s <= 0) return alert("Agotado");
-        cart.push({...p});
-        updatePayBar();
+    function addToCart(id) {
+        const p = store.prods.find(x => x.id === id);
+        store.cart.push(p);
+        updateCartUI();
+        renderPOS(document.getElementById('app-content'));
+        lucide.createIcons();
     }
 
-    function updatePayBar() {
-        const bar = document.getElementById('pay-bar');
-        if(cart.length > 0) {
-            bar.style.display = 'block';
-            document.getElementById('cart-count').innerText = cart.length + " prendas";
-            document.getElementById('cart-total').innerText = fmt(cart.reduce((s,i)=>s+i.v,0));
+    function updateCartUI() {
+        const bar = document.getElementById('ticket-bar');
+        const count = document.getElementById('cart-count');
+        const total = document.getElementById('cart-total');
+        
+        if(store.cart.length > 0) {
+            bar.style.display = 'flex';
+            count.innerText = store.cart.length;
+            total.innerText = '$ ' + store.cart.reduce((s,i)=>s+i.p,0).toLocaleString();
         } else bar.style.display = 'none';
     }
 
-    // --- INVENTARIO ---
-    function renderInv(c) {
-        const prods = DB.get('prods');
-        c.innerHTML = `
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button onclick="modalNewCat()" style="flex:1; padding:12px; border-radius:12px; border:none; background:#f97316; color:white; font-weight:800; font-size:10px;">+ CATEGORÍA</button>
-                <button onclick="modalNewProd()" style="flex:1; padding:12px; border-radius:12px; border:none; background:var(--blue); color:white; font-weight:800; font-size:10px;">+ PRENDA</button>
-            </div>
-            <div style="background:white; border-radius:20px; border:1px solid var(--border); overflow:hidden;">
-                ${prods.map(p => `
-                    <div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between; align-items:center;" onclick="modalAdjStock(${p.id})">
-                        <div style="display:flex; gap:12px; align-items:center;">
-                            <div style="width:40px; height:40px; background:${p.col}15; color:${p.col}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900;">${p.n[0]}</div>
-                            <div><p style="font-weight:800; font-size:13px;">${p.n}</p><p style="font-size:9px; color:#94a3b8;">SKU: ${p.sku}</p></div>
-                        </div>
-                        <div style="text-align:right;"><p style="font-weight:900;">${fmt(p.v)}</p><p style="font-size:10px; color:${p.s<3?'red':'#16a34a'}; font-weight:800;">${p.s} Uds</p></div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    // --- MODALES ---
-    function modalNewProd() {
-        const cats = DB.get('cats');
-        document.getElementById('modal-bg').style.display = 'flex';
-        document.getElementById('modal-container').innerHTML = `
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h3 style="font-weight:900;">Nueva Prenda</h3><button onclick="closeM()" style="border:none; background:none; font-weight:900; color:red;">Cerrar</button></div>
-            <div class="input-box"><label>Nombre del Modelo</label><input type="text" id="n-n"></div>
-            <div class="input-box"><label>Categoría</label><select id="n-c">${cats.map(cat=>`<option value="${cat.id}">${cat.n}</option>`).join('')}</select></div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div class="input-box"><label>Venta</label><input type="number" id="n-v" oninput="calcM()"></div>
-                <div class="input-box"><label>Costo</label><input type="number" id="n-co" oninput="calcM()"></div>
-            </div>
-            <p id="margen-label" style="font-size:11px; font-weight:800; color:#16a34a; margin-bottom:15px;">Margen: 0%</p>
-            <button onclick="saveProd()" class="btn-pay">REGISTRAR PRENDA</button>
-        `;
-    }
-
-    function calcM() {
-        const v = parseFloat(document.getElementById('n-v').value) || 0;
-        const co = parseFloat(document.getElementById('n-co').value) || 0;
-        const m = v > 0 ? ((v-co)/v)*100 : 0;
-        document.getElementById('margen-label').innerText = `Margen estimado: ${m.toFixed(1)}%`;
-    }
-
-    function saveProd() {
-        const n = document.getElementById('n-n').value;
-        const v = parseFloat(document.getElementById('n-v').value);
-        if(!n || isNaN(v)) return;
-        const prods = DB.get('prods');
-        prods.push({ id: Date.now(), n, v, s: 0, col: '#3b82f6', sku: 'CLO-'+Math.floor(Math.random()*9000) });
-        DB.save('prods', prods);
-        closeM(); nav('inv');
-    }
-
-    function modalAdjStock(id) {
-        const p = DB.get('prods').find(x => x.id === id);
-        document.getElementById('modal-bg').style.display = 'flex';
-        document.getElementById('modal-container').innerHTML = `
-            <h3 style="font-weight:900; margin-bottom:10px;">${p.n}</h3>
-            <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">Stock Actual: ${p.s} Uds</p>
-            <div class="input-box"><label>Sumar Cantidad</label><input type="number" id="adj-s" placeholder="Ej: 10"></div>
-            <button onclick="saveAdj(${id})" class="btn-pay">ACTUALIZAR STOCK</button>
-        `;
-    }
-
-    function saveAdj(id) {
-        const adj = parseInt(document.getElementById('adj-s').value) || 0;
-        const prods = DB.get('prods');
-        const pi = prods.findIndex(x => x.id == id);
-        prods[pi].s += adj;
-        DB.save('prods', prods);
-        closeM(); nav('inv');
-    }
-
-    function closeM() { document.getElementById('modal-bg').style.display = 'none'; }
     window.onload = () => nav('pos');
 </script>
 </body>
