@@ -3,259 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ELIMAR POS PRO</title>
+    <title>ELIMAR INVENTARIOS - Sistema TPV & Gestión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* DISEÑO TOTALMENTE INTERNO - ESTILO PROFESIONAL */
-        :root { --blue: #2563eb; --dark: #0f172a; --bg: #f8fafc; --text: #1e293b; --gray: #94a3b8; --white: #ffffff; }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family: sans-serif; }
-        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
-
-        /* SIDEBAR (Para Tablet/PC) */
-        aside { width: 280px; background: var(--dark); flex-direction: column; padding: 25px; shrink-0; display: none; }
-        .logo-box { padding-bottom: 25px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; color: white; }
-        .side-btn { width:100%; display:flex; align-items:center; gap:12px; padding:15px; border-radius:12px; color:var(--gray); border:none; background:none; font-size:14px; font-weight:700; cursor:pointer; text-align:left; margin-bottom: 5px; }
-        .side-btn.active { background: #1e293b; color: white; border-left: 4px solid var(--blue); }
-
-        /* CONTENEDOR PRINCIPAL */
-        .app-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { height: 65px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink-0; }
-        main { flex: 1; padding: 15px; overflow-y: auto; padding-bottom: 120px; }
-
-        /* ESTILOS DE VISTA POS (CUADRICULA) */
-        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .prod-card { background: white; border-radius: 20px; padding: 15px; border: 1px solid #f1f5f9; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; position: relative; }
-        .prod-img { aspect-ratio: 1; border-radius: 15px; background: #eff6ff; color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 35px; font-weight: 900; margin-bottom: 10px; }
-        .badge-cart { position: absolute; top: 10px; right: 10px; background: var(--blue); color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; }
-
-        /* BARRA AZUL INFERIOR (TICKET) */
-        .ticket-bar { position: fixed; bottom: 85px; left: 15px; right: 15px; background: var(--blue); color: white; border-radius: 20px; padding: 18px 25px; display: none; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(37,99,235,0.4); z-index: 500; cursor: pointer; }
-
-        /* MENU INFERIOR MÓVIL */
-        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0 25px; z-index: 1000; }
-        .m-btn { border: none; background: none; color: var(--gray); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; width: 25%; }
-        .m-btn.active { color: var(--blue); }
-        .svg-icon { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* MODALES */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .modal-body { background: white; width: 100%; max-width: 450px; border-radius: 30px; padding: 30px; }
-        input, select { width: 100%; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; margin-bottom: 15px; outline: none; }
-        .btn-action { width: 100%; background: var(--blue); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 14px; cursor: pointer; }
-
-        /* MEDIA QUERIES PC */
-        @media (min-width: 1024px) { 
-            aside { display: flex; } 
-            .mobile-nav { display: none; }
-            main { padding: 30px; }
-            .ticket-bar { left: auto; right: 30px; width: 350px; bottom: 30px; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
+        .sidebar-active { background: #1e293b; color: white; border-left: 4px solid #2563eb; }
+        .tab-active { background: #0f172a; color: white; border-radius: 10px; }
+        .currency-card-active { border: 2px solid #2563eb; background: #eff6ff; }
+        ::-webkit-scrollbar { display: none; }
+        .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); }
+        .shadow-premium { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
-<body>
+<body class="h-screen flex overflow-hidden text-slate-800">
 
-    <!-- BARRA LATERAL PC -->
-    <aside>
-        <div class="logo-box">
-            <h2 style="font-size: 20px; font-weight: 900;">ELIMAR PRO</h2>
-            <p style="font-size: 9px; opacity: 0.5; font-weight: 700; letter-spacing: 1px;">SISTEMA PUNTO DE VENTA</p>
+    <!-- SIDEBAR LATERAL (Como en tu video) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0f172a] text-white transform -translate-x-full transition-transform duration-300 lg:relative lg:translate-x-0 flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">E</div>
+                <div>
+                    <h1 class="font-black text-sm uppercase tracking-tighter">ELIMAR</h1>
+                    <h1 class="font-black text-sm uppercase tracking-tighter leading-none">INVENTARIOS</h1>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase mt-1">Sistema Punto de Venta</p>
+                </div>
+            </div>
         </div>
-        <button onclick="nav('pos')" id="p-pos" class="side-btn active">Punto de Venta</button>
-        <button onclick="nav('inv')" id="p-inv" class="side-btn">Inventario</button>
-        <button onclick="nav('tkts')" id="p-tkts" class="side-btn">Historial Tickets</button>
-        <button onclick="nav('reps')" id="p-reps" class="side-btn">Informes</button>
-        <button onclick="nav('conf')" id="p-conf" class="side-btn" style="margin-top:auto">Ajustes</button>
+
+        <div class="p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center font-black text-lg border-2 border-slate-600">B</div>
+            <div>
+                <p class="font-bold text-sm">BLOOD</p>
+                <p class="text-[10px] text-slate-500 font-semibold">Administrador</p>
+                <div class="mt-1 inline-flex items-center gap-1.5 bg-[#064e3b] px-2 py-0.5 rounded-full text-[#34d399] text-[9px] font-bold uppercase">
+                    <span class="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse"></span> En línea
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+            <button onclick="nav('pos')" id="btn-pos" class="sidebar-active w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="shopping-cart" size="18"></i> Punto de Venta
+            </button>
+            <button onclick="nav('inv')" id="btn-inv" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold">
+                <i data-lucide="package" size="18"></i> Inventario & Prendas
+            </button>
+            <button onclick="nav('tkts')" id="btn-tkts" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold">
+                <i data-lucide="ticket" size="18"></i> Historial Tickets
+            </button>
+            <button onclick="nav('clts')" id="btn-clts" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold">
+                <i data-lucide="users" size="18"></i> Clientes & Puntos
+            </button>
+            <button onclick="nav('reps')" id="btn-reps" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold">
+                <i data-lucide="bar-chart-3" size="18"></i> Informes & Ventas
+            </button>
+            <button onclick="nav('conf')" id="btn-conf" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold mt-auto">
+                <i data-lucide="settings" size="18"></i> Configuración
+            </button>
+        </nav>
     </aside>
 
-    <div class="app-main">
-        <header>
-            <h2 id="v-title" style="font-weight: 900; font-size: 18px;">Cargando...</h2>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div id="h-curr" style="background:#eff6ff; color:var(--blue); font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px;">COP ($)</div>
-                <div style="width:38px; height:38px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.1);">👤</div>
+    <!-- AREA PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0 h-full relative">
+        <header class="h-16 bg-white border-b px-4 lg:px-8 flex items-center justify-between shrink-0 sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-600"><i data-lucide="menu"></i></button>
+                <h2 id="top-title" class="font-extrabold text-slate-800 text-lg uppercase tracking-tight">Punto de Venta</h2>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="bg-slate-100 border px-3 py-1.5 rounded-2xl text-[10px] font-black text-slate-600" id="h-curr">COP ($)</div>
+                <div class="hidden sm:flex gap-2">
+                    <button class="p-2 bg-slate-50 border rounded-xl text-slate-400"><i data-lucide="cloud" size="16"></i></button>
+                    <button class="p-2 bg-slate-50 border rounded-xl text-slate-400"><i data-lucide="scan" size="16"></i></button>
+                </div>
+                <div class="w-9 h-9 bg-slate-100 border rounded-2xl flex items-center justify-center text-slate-400 ml-2 overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="user">
+                </div>
             </div>
         </header>
 
-        <main id="v-content"></main>
+        <div id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-8"></div>
 
-        <!-- BARRA AZUL (VER TICKET) -->
-        <div id="ticket-bar" class="ticket-bar" onclick="openCart()">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div id="badge-count" style="width:30px; height:30px; background:white; color:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900;">0</div>
-                <span style="font-weight:800; font-size:13px; text-transform:uppercase;">Ver Ticket</span>
+        <!-- BARRA AZUL "VER TICKET" -->
+        <div id="ticket-bar" onclick="openCart()" class="hidden fixed bottom-6 left-4 right-4 lg:left-auto lg:right-8 lg:w-96 bg-[#2563eb] text-white p-5 rounded-[1.8rem] shadow-2xl flex items-center justify-between z-[60] cursor-pointer active:scale-95 transition-all">
+            <div class="flex items-center gap-3">
+                <div id="badge-count" class="w-8 h-8 bg-white text-blue-600 rounded-full flex items-center justify-center font-black text-sm">0</div>
+                <span class="font-black text-xs uppercase tracking-widest">Ver Ticket</span>
             </div>
-            <span id="badge-total" style="font-weight:900; font-size:18px;">$ 0</span>
+            <div class="flex items-center gap-2">
+                <span id="badge-total" class="font-black text-xl">$ 0</span>
+                <i data-lucide="chevron-up" size="20"></i>
+            </div>
         </div>
+    </main>
 
-        <!-- NAV INFERIOR MÓVIL -->
-        <nav class="mobile-nav">
-            <button onclick="nav('pos')" id="m-pos" class="m-btn active">
-                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                VENTAS
-            </button>
-            <button onclick="nav('inv')" id="m-inv" class="m-btn">
-                <svg class="svg-icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-                STOCK
-            </button>
-            <button onclick="nav('reps')" id="m-reps" class="m-btn">
-                <svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                INFORMES
-            </button>
-            <button onclick="nav('conf')" id="m-conf" class="m-btn">
-                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
-                AJUSTES
-            </button>
-        </nav>
+    <!-- MODAL SISTEMA -->
+    <div id="modal-bg" class="hidden fixed inset-0 modal-blur z-[100] flex items-center justify-center p-4">
+        <div id="modal-container" class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col"></div>
     </div>
 
-    <!-- MODAL -->
-    <div id="modal-bg" class="modal"><div id="modal-container" class="modal-body"></div></div>
-
 <script>
-    // --- LÓGICA DE NEGOCIO ---
+    // --- LÓGICA DE DATOS ---
     const DB = {
-        save: (k,v) => localStorage.setItem('el_pro_'+k, JSON.stringify(v)),
-        get: (k,d) => JSON.parse(localStorage.getItem('el_pro_'+k)) || d,
+        save: (k,v) => localStorage.setItem('pos_v4_'+k, JSON.stringify(v)),
+        get: (k,d) => JSON.parse(localStorage.getItem('pos_v4_'+k)) || d,
         init() {
-            if(!localStorage.getItem('el_pro_conf')) this.save('conf', { store: "ELIMAR", curr: {code:'COP', s:'$'} });
-            if(!localStorage.getItem('el_pro_prods')) this.save('prods', []);
-            if(!localStorage.getItem('el_pro_tkts')) this.save('tkts', []);
+            if(!localStorage.getItem('pos_v4_conf')) this.save('conf', { 
+                store:"ELIMAR INVENTARIOS", nit:"", tel:"", addr:"", 
+                curr:{c:'COP', s:'$', n:'Peso Colombiano'}, 
+                tax:19, taxOn:true, loyaltyOn: true,
+                recHead: "¡Gracias por su compra!", recFoot: "Conserve este ticket."
+            });
+            if(!localStorage.getItem('pos_v4_cats')) this.save('cats', [{id:1, n:'Camisetas & Polos', c:'#3b82f6'}]);
+            if(!localStorage.getItem('pos_v4_prods')) this.save('prods', []);
+            if(!localStorage.getItem('pos_v4_tkts')) this.save('tkts', []);
+            if(!localStorage.getItem('pos_v4_clts')) this.save('clts', []);
         }
     };
     DB.init();
 
-    let cart = [];
-    const conf = DB.get('conf');
-    const fmt = (n) => `${conf.curr.s}${Math.round(n).toLocaleString()}`;
+    let state = { view:'pos', cart:[], currency: DB.get('conf').curr, filterCat:0 };
+    const fmt = (n) => `${state.currency.s} ${Math.round(n).toLocaleString()}`;
 
+    // --- NAVEGACIÓN ---
     function nav(v) {
-        const c = document.getElementById('v-content');
-        document.getElementById('v-title').innerText = v.toUpperCase();
-        document.querySelectorAll('.m-btn, .side-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('m-'+v)?.classList.add('active');
-        document.getElementById('p-'+v)?.classList.add('active');
+        state.view = v;
+        const c = document.getElementById('main-content');
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('sidebar-active', 'text-white'));
+        document.getElementById('btn-'+v).classList.add('sidebar-active');
+        document.getElementById('top-title').innerText = v === 'pos' ? 'POS' : v.toUpperCase();
+        document.getElementById('h-curr').innerText = `${state.currency.c} (${state.currency.s})`;
 
         if(v==='pos') renderPOS(c);
         if(v==='inv') renderInv(c);
         if(v==='tkts') renderTkts(c);
+        if(v==='clts') renderClts(c);
         if(v==='reps') renderReps(c);
         if(v==='conf') renderConf(c);
-        updateCartUI();
+        
+        if(window.innerWidth < 1024) toggleSidebar(false);
+        lucide.createIcons();
     }
 
     // --- PUNTO DE VENTA ---
     function renderPOS(c) {
         const prods = DB.get('prods');
         c.innerHTML = `
-            <input type="text" placeholder="🔍 Buscar prenda..." style="margin-bottom:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-            <div class="prod-grid">
-                <div class="prod-card" style="border:2px dashed var(--gray); color:var(--gray); display:flex; flex-direction:column; justify-content:center; align-items:center;" onclick="alert('Manual habilitado')">
-                    <span style="font-size:40px; font-weight:300;">+</span><p style="font-size:10px; font-weight:800; text-transform:uppercase;">Manual</p>
+            <div class="flex flex-col md:flex-row gap-3 mb-6">
+                <div class="relative flex-1"><i data-lucide="search" class="absolute left-4 top-3.5 text-slate-300" size="18"></i><input type="text" placeholder="Buscar prenda por nombre..." class="w-full pl-12 pr-4 py-3 bg-white border border-slate-100 rounded-2xl shadow-sm outline-none"></div>
+                <div class="flex gap-2">
+                    <button class="bg-white border px-4 py-3 rounded-2xl font-bold text-xs text-slate-500"><i data-lucide="star" class="text-orange-400 inline mr-2" size="16"></i>Top Ventas</button>
+                    <button onclick="newProdModal()" class="bg-blue-600 text-white p-3 rounded-2xl shadow-lg shadow-blue-100"><i data-lucide="plus"></i></button>
                 </div>
-                ${prods.map(p => {
-                    const count = cart.filter(x=>x.id==p.id).length;
-                    return `<div class="prod-card" onclick="addToCart(${p.id})">
-                        ${count>0 ? `<div class="badge-cart">${count} en carrito</div>` : ''}
-                        <div class="prod-img">${p.n[0]}</div>
-                        <p style="font-weight:700; font-size:12px;">${p.n}</p>
-                        <p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p>
-                        <p style="font-size:9px; font-weight:800; color:#16a34a; margin-top:5px;">STOCK: ${p.s} uds</p>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-4 mb-6">
+                <button onclick="state.filterCat=0;nav('pos')" class="px-5 py-2.5 rounded-full font-bold text-[11px] whitespace-nowrap ${state.filterCat==0?'bg-blue-600 text-white shadow-lg':'bg-white border text-slate-500'}">Todo el Catálogo (${prods.length})</button>
+                ${DB.get('cats').map(cat => `<button onclick="state.filterCat=${cat.id};nav('pos')" class="bg-white border text-slate-500 px-5 py-2.5 rounded-full font-bold text-[11px] whitespace-nowrap ${state.filterCat==cat.id?'border-blue-600 text-blue-600':''}">${cat.n}</button>`).join('')}
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div onclick="vManual()" class="bg-white border-2 border-dashed border-slate-200 rounded-[2.2rem] p-6 flex flex-col items-center justify-center text-slate-300 active:scale-95 transition cursor-pointer">
+                    <i data-lucide="plus-circle" size="32" class="text-blue-500 opacity-50"></i>
+                    <p class="font-bold text-[10px] mt-2 uppercase tracking-widest leading-none">Venta Manual</p>
+                </div>
+                ${prods.filter(p => state.filterCat==0 || p.catId==state.filterCat).map(p => {
+                    const inCart = state.cart.filter(x=>x.id==p.id).length;
+                    return `<div onclick="addCart(${p.id})" class="bg-white p-4 rounded-[2.2rem] border border-slate-50 shadow-sm relative cursor-pointer active:scale-95 transition">
+                        ${inCart > 0 ? `<div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-0.5 rounded-full text-[9px] font-black">${inCart} en carrito</div>` : ''}
+                        <div class="aspect-square bg-blue-50 rounded-2xl flex items-center justify-center mb-4 text-blue-200"><i data-lucide="shirt" size="36"></i></div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">${p.cat}</p>
+                        <h3 class="font-bold text-xs text-slate-800 truncate mb-2">${p.n}</h3>
+                        <div class="flex justify-between items-center mt-auto"><span class="text-blue-600 font-black text-sm">${fmt(p.v)}</span><span class="text-[9px] font-bold text-green-500 bg-green-50 px-2 py-0.5 rounded">Stock: ${p.s}</span></div>
                     </div>`}).join('')}
+            </div>`;
+        updateBadge();
+    }
+
+    // --- COBRO Y CALCULO (Billetes sugeridos) ---
+    function checkout(total) {
+        let rec = total;
+        const up = () => {
+            document.getElementById('rec-v').innerText = fmt(rec);
+            const cam = rec - total;
+            document.getElementById('cam-v').innerText = fmt(cam > 0 ? cam : 0);
+            document.getElementById('btn-fin').disabled = rec < total;
+        };
+        showModal(`
+            <div class="p-8">
+                <h3 class="font-black text-xl mb-6">Proceso de Cobro</h3>
+                <div class="bg-slate-50 p-6 rounded-3xl text-center mb-8 border">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total a Pagar</p>
+                    <p class="text-4xl font-black text-slate-900">${fmt(total)}</p>
+                </div>
+                <div class="grid grid-cols-4 gap-2 mb-8">
+                    <button onclick="setRec(${total})" class="p-4 bg-blue-50 text-blue-600 rounded-xl font-black text-xs border border-blue-100">Exacto</button>
+                    ${[10000, 20000, 50000].map(b => `<button onclick="setRec(${b})" class="p-4 bg-slate-100 rounded-xl font-bold text-xs">$${b/1000}k</button>`).join('')}
+                </div>
+                <div class="space-y-4 px-2">
+                    <div class="flex justify-between font-bold text-slate-400 text-sm"><span>Recibido</span><span id="rec-v" class="text-slate-800 font-black">${fmt(total)}</span></div>
+                    <div class="flex justify-between font-bold text-slate-400 text-sm border-t pt-4"><span>Cambio</span><span id="cam-v" class="text-green-600 font-black">$ 0</span></div>
+                </div>
+                <button id="btn-fin" onclick="saveSale(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.8rem] font-black mt-10 shadow-xl shadow-blue-200 disabled:opacity-20">FINALIZAR COBRO</button>
+            </div>
+        `);
+        window.setRec = (v) => { rec = v; up(); };
+    }
+
+    // --- CONFIGURACIÓN (Imagen: Toda la lista funcional) ---
+    function renderConf(c) {
+        const conf = DB.get('conf');
+        c.innerHTML = `
+            <div class="max-w-4xl mx-auto space-y-8">
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="font-black text-xs text-slate-400 uppercase tracking-widest flex items-center gap-2"><i data-lucide="globe" size="14"></i> Moneda del TPV</h3>
+                        <div class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg font-black text-[10px] uppercase">${conf.curr.c}</div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        ${[{c:'COP',s:'$'},{c:'USD',s:'$'},{c:'EUR',s:'€'},{c:'PEN',s:'S/'},{c:'MXN',s:'$'},{c:'CLP',s:'$'},{c:'ARS',s:'$'}].map(cur => `
+                            <button onclick="updateCurr('${cur.c}','${cur.s}')" class="p-5 border-2 rounded-3xl transition-all ${conf.curr.c==cur.c?'border-blue-600 bg-blue-50':'border-slate-100'}">
+                                <p class="text-xl font-black">${cur.c}</p><p class="text-blue-600 font-bold">${cur.s}</p>
+                            </button>`).join('')}
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                    <h3 class="font-black text-xs text-slate-400 uppercase mb-8">Datos de la Empresa</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Nombre Tienda</label><input type="text" id="c-st" value="${conf.store}" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
+                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">NIT / RUT</label><input type="text" id="c-nit" value="${conf.nit}" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                    <h3 class="font-black text-xs text-slate-400 uppercase mb-8">Impuestos & IVA</h3>
+                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl">
+                        <div><p class="font-bold text-sm">Habilitar cobro de IVA</p><p class="text-[9px] text-slate-400 font-bold">Activa el 19% en cada venta</p></div>
+                        <input type="checkbox" ${conf.taxOn?'checked':''} onchange="toggleTax()" class="w-6 h-6 rounded border-slate-300 text-blue-600">
+                    </div>
+                </div>
+
+                <div class="bg-red-50 p-8 rounded-[2.5rem] border border-red-100 text-center">
+                    <p class="text-[10px] font-black text-red-400 uppercase mb-6">Mantenimiento de Datos</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="loadSamples()" class="bg-white text-slate-800 border px-8 py-3 rounded-2xl font-bold text-xs uppercase shadow-sm">Cargar Muestras</button>
+                        <button onclick="localStorage.clear(); location.reload();" class="bg-red-600 text-white px-8 py-3 rounded-2xl font-bold text-xs uppercase shadow-lg shadow-red-100">Vaciar Base de Datos</button>
+                    </div>
+                </div>
             </div>`;
     }
 
-    function addToCart(id) {
+    // --- FUNCIONES DE SOPORTE ---
+    function addCart(id) {
         const p = DB.get('prods').find(x=>x.id==id);
-        if(p.s <= 0) return alert("Sin Stock");
-        cart.push({...p});
-        updateCartUI();
-        renderPOS(document.getElementById('v-content'));
+        if(p.s <= 0) return alert("Sin existencias");
+        state.cart.push({...p}); updateBadge(); nav('pos');
     }
-
-    function updateCartUI() {
+    function updateBadge() {
         const b = document.getElementById('ticket-bar');
-        const count = document.getElementById('badge-count');
-        const total = document.getElementById('badge-total');
-        if(cart.length > 0) {
-            b.style.display = 'flex';
-            count.innerText = cart.length;
-            total.innerText = fmt(cart.reduce((s,i)=>s+i.v,0));
-        } else b.style.display = 'none';
+        const tot = state.cart.reduce((s,i)=>s+i.v,0);
+        if(state.cart.length > 0) {
+            b.classList.remove('hidden');
+            document.getElementById('badge-count').innerText = state.cart.length;
+            document.getElementById('badge-total').innerText = fmt(tot);
+        } else b.classList.add('hidden');
     }
-
     function openCart() {
-        const total = cart.reduce((s,i)=>s+i.v,0);
+        const sub = state.cart.reduce((s,i)=>s+i.v,0);
+        const iva = sub * (DB.get('conf').taxOn ? DB.get('conf').tax/100 : 0);
         showModal(`
-            <h3 style="font-weight:900; margin-bottom:20px;">Mi Ticket</h3>
-            <div style="max-height:200px; overflow-y:auto; margin-bottom:20px;">
-                ${cart.map((i,idx)=>`<div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px; margin-bottom:10px;"><span>${i.n}</span><span>${fmt(i.v)}</span></div>`).join('')}
+            <div class="p-8"><h3 class="font-black text-xl mb-6">Ticket en Curso</h3>
+            <div class="space-y-3 mb-8 max-h-60 overflow-y-auto">
+                ${state.cart.map((i,idx)=>`<div class="flex justify-between font-bold text-sm"><span>${i.n}</span><div class="flex gap-4"><span>${fmt(i.v)}</span><button onclick="remItem(${idx})" class="text-red-400"><i data-lucide="trash-2" size="14"></i></button></div></div>`).join('')}
             </div>
-            <div style="display:flex; justify-content:space-between; font-weight:900; font-size:22px; border-top:1px dashed var(--gray); pt-20; margin-top:10px; padding-top:15px;"><span>TOTAL</span><span>${fmt(total)}</span></div>
-            <button onclick="pagar(${total})" class="btn-action" style="margin-top:20px;">COBRAR</button>
-            <button onclick="cart=[];closeM();nav('pos')" style="width:100%; border:none; background:none; font-weight:800; font-size:10px; color:red; margin-top:15px;">VACIAR TICKET</button>
+            <div class="border-t pt-6 space-y-1">
+                <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+                <div class="flex justify-between text-2xl font-black pt-2 uppercase tracking-tighter"><span>TOTAL</span><span>${fmt(sub+iva)}</span></div>
+            </div>
+            <button onclick="checkout(${sub+iva})" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black mt-8 shadow-xl">COBRAR</button></div>
         `);
     }
 
-    function pagar(t) {
-        const tkts = DB.get('tkts'); tkts.unshift({ id:Date.now(), f:new Date().toLocaleString(), t }); DB.save('tkts', tkts);
-        const ps = DB.get('prods'); cart.forEach(c => { const pi=ps.findIndex(x=>x.id==c.id); if(pi!=-1) ps[pi].s-=1; }); DB.save('prods', ps);
-        cart = []; closeM(); alert("¡Venta Exitosa!"); nav('tkts');
-    }
-
-    // --- INVENTARIO ---
+    // Funciones del Inventario (Nombres exactos del video)
     function renderInv(c) {
         c.innerHTML = `
-            <button onclick="modalNewP()" class="btn-action" style="background:var(--dark); margin-bottom:20px;">+ NUEVA PRENDA</button>
-            <div style="background:white; border-radius:20px; border:1px solid #e2e8f0; overflow:hidden;">
-                ${DB.get('prods').map(p => `<div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between; align-items:center;" onclick="adjStock(${p.id})">
-                    <div><p style="font-weight:800;">${p.n}</p><p style="font-size:9px; color:var(--gray);">COSTO: ${fmt(p.c)}</p></div>
-                    <div style="text-align:right;"><p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p><p style="font-size:10px; font-weight:800;">${p.s} UDS</p></div>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="font-black text-2xl tracking-tighter">Inventario</h2>
+                <div class="flex gap-2"><button onclick="newProdModal()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl shadow-blue-100">+ Nueva Prenda</button></div>
+            </div>
+            <div class="bg-white rounded-[2.5rem] border shadow-sm divide-y overflow-hidden">
+                ${DB.get('prods').map(p => `<div class="p-6 flex items-center justify-between hover:bg-slate-50 transition cursor-pointer" onclick="adjStock(${p.id})">
+                    <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-white" style="background:${p.col}">${p.n[0]}</div><div><p class="font-black text-slate-800">${p.n}</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${p.cat}</p></div></div>
+                    <div class="text-right"><p class="font-black text-blue-600">${fmt(p.v)}</p><p class="text-[10px] font-bold text-slate-400 uppercase">Stock: ${p.s} Uds</p></div>
                 </div>`).join('')}
             </div>`;
     }
 
-    function modalNewP() {
+    function newProdModal() {
         showModal(`
-            <h3 style="font-weight:900; margin-bottom:20px;">Nueva Prenda</h3>
-            <input type="text" id="n-n" placeholder="Nombre">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <input type="number" id="n-v" placeholder="Venta $" oninput="mCalc()">
-                <input type="number" id="n-c" placeholder="Costo $" oninput="mCalc()">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-8"><h3 class="font-black text-xl">Nueva Prenda de Vestir</h3><button onclick="closeModal()"><i data-lucide="x"></i></button></div>
+                <div class="space-y-4">
+                    <input type="text" id="n-n" placeholder="Ej: Camiseta Oversize" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold">
+                    <div class="grid grid-cols-2 gap-3"><input type="number" id="n-v" placeholder="Venta $" oninput="mC()" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"><input type="number" id="n-c" placeholder="Costo $" oninput="mC()" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
+                    <p id="m-lab" class="text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-50 p-2 rounded-lg text-center">Margen: 0%</p>
+                    <input type="number" id="n-s" placeholder="Stock Inicial" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold">
+                    <button onclick="saveP()" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black mt-6 shadow-xl shadow-blue-200">REGISTRAR</button>
+                </div>
             </div>
-            <p id="m-lab" style="font-size:10px; font-weight:900; color:#16a34a; margin-bottom:15px;">MARGEN: 0%</p>
-            <input type="number" id="n-s" placeholder="Stock Inicial">
-            <button onclick="saveP()" class="btn-action">GUARDAR PRENDA</button>
         `);
     }
 
-    function mCalc() {
-        const v = parseFloat(document.getElementById('n-v').value)||0, c = parseFloat(document.getElementById('n-c').value)||0;
-        const m = v > 0 ? ((v-c)/v)*100 : 0;
-        document.getElementById('m-lab').innerText = "MARGEN ESTIMADO: " + m.toFixed(1) + "%";
+    function saveSale(total) {
+        const tkts = DB.get('tkts'); tkts.unshift({ id:Date.now(), f:new Date().toLocaleString(), t:total, i:[...state.cart] }); DB.save('tkts', tkts);
+        const ps = DB.get('prods'); state.cart.forEach(c => { const pi = ps.findIndex(x=>x.id==c.id); if(pi!=-1) ps[pi].s-=1; }); DB.save('prods', ps);
+        state.cart = []; closeModal(); alert("¡Venta finalizada!"); nav('tkts');
     }
 
-    function saveP() {
-        const n=document.getElementById('n-n').value, v=parseFloat(document.getElementById('n-v').value), c=parseFloat(document.getElementById('n-c').value)||0, s=parseInt(document.getElementById('n-s').value)||0;
-        if(!n || isNaN(v)) return alert("Datos obligatorios");
-        const ps = DB.get('prods'); ps.push({ id:Date.now(), n, v, c, s }); DB.save('prods', ps); closeM(); nav('inv');
+    function loadSamples() {
+        DB.save('prods', [
+            {id:1, n:"Pijama corta - S", v:35000, c:20000, s:15, cat:"PIJAMA", col:"#3b82f6"},
+            {id:2, n:"Chaqueta Impermeable", v:120000, c:80000, s:5, cat:"CHAQUETAS", col:"#ef4444"}
+        ]);
+        location.reload();
     }
 
-    function adjStock(id) {
-        const p = DB.get('prods').find(x=>x.id==id);
-        showModal(`<h3>Ajustar Stock: ${p.n}</h3><p style="font-size:12px; margin:10px 0 20px;">Actual: ${p.s} uds</p>
-            <input type="number" id="a-s" placeholder="Sumar cantidad">
-            <button onclick="saveAdj(${id})" class="btn-action">ACTUALIZAR</button>`);
-    }
-    function saveAdj(id) { 
-        const v = parseInt(document.getElementById('a-s').value)||0; const ps = DB.get('prods'); const i = ps.findIndex(x=>x.id==id); ps[i].s += v; DB.save('prods', ps); closeM(); nav('inv'); 
-    }
-
-    // --- OTROS ---
-    function renderTkts(c) { c.innerHTML = DB.get('tkts').map(t=>`<div style="background:white; padding:15px; border-radius:15px; border:1px solid #e2e8f0; margin-bottom:10px; display:flex; justify-content:space-between;"><div><p style="font-weight:800;">Ticket #${t.id.toString().slice(-4)}</p><p style="font-size:9px; color:var(--gray);">${t.f}</p></div><p style="font-weight:900; font-size:18px;">${fmt(t.t)}</p></div>`).join(''); }
-    function renderReps(c) { const total = DB.get('tkts').reduce((s,t)=>s+t.t,0); c.innerHTML = `<div style="background:white; padding:30px; border-radius:30px; text-align:center; border:1px solid #e2e8f0;"><p style="font-size:10px; font-weight:900; color:var(--gray); margin-bottom:5px;">VENTAS TOTALES BRUTAS</p><p style="font-size:32px; font-weight:900; color:var(--blue);">${fmt(total)}</p></div>`; }
-    function renderConf(c) { c.innerHTML = `<div style="background:white; padding:20px; border-radius:20px; text-align:center;"><p style="font-size:10px; font-weight:900; margin-bottom:20px;">CONFIGURACIÓN DEL SISTEMA</p><button onclick="localStorage.clear(); location.reload();" style="color:red; font-weight:900; border:none; background:none;">BORRAR TODO Y REINICIAR APP</button></div>`; }
-
-    function showModal(h) { document.getElementById('modal-container').innerHTML = h; document.getElementById('modal-bg').style.display='flex'; }
-    function closeM() { document.getElementById('modal-bg').style.display='none'; }
+    function updateCurr(c,s) { const f = DB.get('conf'); f.curr={c, s}; DB.save('conf', f); state.currency={c,s}; nav('conf'); }
+    function toggleTax() { const f = DB.get('conf'); f.taxOn = !f.taxOn; DB.save('conf', f); nav('conf'); }
+    function mC() { const v = parseFloat(document.getElementById('n-v').value)||0, c = parseFloat(document.getElementById('n-c').value)||0; const m = v > 0 ? ((v-c)/v)*100 : 0; document.getElementById('m-lab').innerText = "Margen: "+m.toFixed(1)+"%"; }
+    function remItem(i) { state.cart.splice(i,1); updateBadge(); openCart(); }
+    function showModal(h) { document.getElementById('modal-container').innerHTML = h; document.getElementById('modal-bg').classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal() { document.getElementById('modal-bg').classList.add('hidden'); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
 
     window.onload = () => nav('pos');
 </script>
