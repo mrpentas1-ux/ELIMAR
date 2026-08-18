@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar POS - Paso 2</title>
+    <title>Elimar POS - Paso 3</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
@@ -11,7 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
 
-        /* BARRA LATERAL */
+        /* NAVEGACIÓN PC */
         aside { width: 280px; background: var(--dark); display: flex; flex-direction: column; padding: 30px 20px; shrink-0; }
         .logo-box { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
         .logo-icon { background: var(--blue); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; }
@@ -20,26 +20,34 @@
         .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
         .nav-item.active { background: var(--blue); color: white; }
 
-        /* MAIN */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; }
-        header { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; shrink-0; }
+        /* ÁREA PRINCIPAL */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .currency-badge { background: #eff6ff; color: var(--blue); font-size: 10px; font-weight: 900; padding: 6px 12px; border-radius: 10px; border: 1px solid #dbeafe; }
         main { flex: 1; padding: 25px; overflow-y: auto; }
 
-        /* GRID DE MONEDAS (Tu foto 1) */
-        .currency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
-        .currency-card { background: white; border: 2px solid #f1f5f9; border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .currency-card:hover { border-color: #e2e8f0; }
-        .currency-card.active { border-color: var(--blue); background: #eff6ff; }
-        .currency-card p:nth-child(1) { font-weight: 900; font-size: 18px; color: var(--dark); }
-        .currency-card p:nth-child(2) { font-weight: 800; font-size: 18px; color: var(--blue); margin: 4px 0; }
-        .currency-card p:nth-child(3) { font-size: 9px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* INVENTARIO Y TARJETAS */
+        .btn-action { padding: 10px 20px; border-radius: 12px; border: none; font-weight: 800; font-size: 11px; text-transform: uppercase; cursor: pointer; color: white; display: flex; align-items: center; gap: 8px; }
+        .btn-blue { background: var(--blue); }
+        .btn-orange { background: #f97316; }
 
-        /* INPUTS AJUSTES */
-        .settings-section { background: white; border-radius: 25px; border: 1px solid #e2e8f0; padding: 30px; margin-bottom: 25px; }
-        .input-group { margin-top: 20px; }
-        .input-label { font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 8px; display: block; }
-        input { width: 100%; padding: 14px 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; color: var(--text); outline: none; }
+        .inv-table { width: 100%; background: white; border-radius: 25px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 20px; border-collapse: collapse; }
+        .inv-table th { background: #f8fafc; padding: 15px 20px; text-align: left; font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .inv-table td { padding: 15px 20px; border-bottom: 1px solid #f8fafc; font-size: 13px; font-weight: 600; }
+        .stock-badge { padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 12px; }
+        .stock-ok { background: #f0fdf4; color: #16a34a; }
+        .stock-low { background: #fef2f2; color: #dc2626; }
+
+        /* MODALES (Ventanas Emergentes) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+        .modal-card { background: white; width: 100%; max-width: 500px; border-radius: 30px; padding: 30px; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .close-btn { background: none; border: none; color: var(--gray); cursor: pointer; }
+
+        /* FORMULARIOS */
+        .input-group { margin-bottom: 15px; }
+        .input-label { font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; display: block; }
+        input, select { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; color: var(--text); outline: none; }
         input:focus { border-color: var(--blue); }
 
         /* MOBILE NAV */
@@ -52,6 +60,7 @@
 </head>
 <body>
 
+    <!-- BARRA LATERAL -->
     <aside>
         <div class="logo-box">
             <div class="logo-icon">E</div>
@@ -59,15 +68,15 @@
         </div>
         <nav class="sidebar-nav">
             <button onclick="nav('pos')" id="pc-pos" class="nav-item"><i data-lucide="shopping-cart"></i> Ventas</button>
-            <button onclick="nav('inv')" id="pc-inv" class="nav-item"><i data-lucide="package"></i> Inventario</button>
+            <button onclick="nav('inv')" id="pc-inv" class="nav-item active"><i data-lucide="package"></i> Inventario</button>
             <button onclick="nav('reps')" id="pc-reps" class="nav-item"><i data-lucide="bar-chart-3"></i> Reportes</button>
-            <button onclick="nav('conf')" id="pc-conf" class="nav-item active" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
+            <button onclick="nav('conf')" id="pc-conf" class="nav-item" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
         </nav>
     </aside>
 
     <div class="main-wrapper">
         <header>
-            <h2 id="view-title" class="header-title" style="font-weight: 800; font-size: 18px;">Ajustes</h2>
+            <h2 id="view-title" style="font-weight: 800; font-size: 18px;">Inventario</h2>
             <div class="header-right" style="display: flex; gap: 12px; align-items: center;">
                 <div class="currency-badge" id="header-currency-badge">COP ($)</div>
                 <div style="width: 38px; height: 38px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #64748b;"><i data-lucide="user" size="18"></i></div>
@@ -78,10 +87,15 @@
 
         <nav class="mobile-nav">
             <button onclick="nav('pos')" id="m-pos" class="m-nav-item"><i data-lucide="shopping-cart"></i>VENTAS</button>
-            <button onclick="nav('inv')" id="m-inv" class="m-nav-item"><i data-lucide="package"></i>STOCK</button>
+            <button onclick="nav('inv')" id="m-inv" class="m-nav-item active"><i data-lucide="package"></i>STOCK</button>
             <button onclick="nav('reps')" id="m-reps" class="m-nav-item"><i data-lucide="bar-chart-3"></i>REPORTES</button>
-            <button onclick="nav('conf')" id="m-conf" class="m-nav-item active"><i data-lucide="settings"></i>AJUSTES</button>
+            <button onclick="nav('conf')" id="m-conf" class="m-nav-item"><i data-lucide="settings"></i>AJUSTES</button>
         </nav>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal-bg" class="modal-overlay">
+        <div id="modal-container" class="modal-card"></div>
     </div>
 
     <script>
@@ -90,25 +104,12 @@
             save: (key, val) => localStorage.setItem('elimar_' + key, JSON.stringify(val)),
             get: (key, def) => JSON.parse(localStorage.getItem('elimar_' + key)) || def,
             init() {
-                if(!localStorage.getItem('elimar_config')) {
-                    this.save('config', { 
-                        store: "ELIMAR INVENTARIOS", 
-                        currency: { code: 'COP', sym: '$', name: 'Peso Colombiano' } 
-                    });
-                }
+                if(!localStorage.getItem('elimar_config')) this.save('config', { store: "ELIMAR", currency: { code: 'COP', sym: '$' } });
+                if(!localStorage.getItem('elimar_cats')) this.save('cats', [{id: 1, n: 'Camisetas & Polos', c: '#3b82f6'}]);
+                if(!localStorage.getItem('elimar_prods')) this.save('prods', []);
             }
         };
         DB.init();
-
-        const currencies = [
-            { code: 'COP', sym: '$', name: 'Peso Colombiano' },
-            { code: 'USD', sym: '$', name: 'Dólar Estadounidense' },
-            { code: 'EUR', sym: '€', name: 'Euro (€)' },
-            { code: 'MXN', sym: '$', name: 'Peso Mexicano' },
-            { code: 'PEN', sym: 'S/', name: 'Sol Peruano' },
-            { code: 'CLP', sym: '$', name: 'Peso Chileno' },
-            { code: 'ARS', sym: '$', name: 'Peso Argentino' }
-        ];
 
         function nav(view) {
             const container = document.getElementById('main-content');
@@ -118,61 +119,107 @@
             document.querySelectorAll('.nav-item, .m-nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById('m-'+view)?.classList.add('active');
             document.getElementById('pc-'+view)?.classList.add('active');
-            
             document.getElementById('header-currency-badge').innerText = `${config.currency.code} (${config.currency.sym})`;
 
-            if (view === 'conf') renderAjustes(container, title, config);
+            if (view === 'inv') renderInventario(container, title);
             else {
                 title.innerText = view.toUpperCase();
-                container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--gray); font-weight:700;">Pantalla de ${view} lista para el Paso 3.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--gray); font-weight:700;">Pantalla de ${view} en reconstrucción...</div>`;
             }
             lucide.createIcons();
         }
 
-        function renderAjustes(container, title, config) {
-            title.innerText = "Ajustes de Tienda & Moneda";
+        // --- LÓGICA DE INVENTARIO ---
+        function renderInventario(container, title) {
+            title.innerText = "Control de Inventario";
+            const prods = DB.get('prods');
             container.innerHTML = `
-                <div class="settings-section">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <i data-lucide="globe" style="color:var(--blue);"></i>
-                        <h4 style="font-size:10px; font-weight:900; letter-spacing:1px; color:var(--gray); text-transform:uppercase;">Moneda & Divisa del TPV</h4>
-                    </div>
-                    <div class="currency-grid">
-                        ${currencies.map(c => `
-                            <div onclick="setCurrency('${c.code}')" class="currency-card ${config.currency.code === c.code ? 'active' : ''}">
-                                <p>${c.code}</p>
-                                <p>${c.sym}</p>
-                                <p>${c.name}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div style="margin-top:30px; border-top:1px solid #f1f5f9; pt-20">
-                        <div class="input-group">
-                            <span class="input-label">Nombre Comercial de la Tienda</span>
-                            <input type="text" id="store-input" value="${config.store}">
-                        </div>
-                        <button onclick="saveStore()" style="margin-top:20px; background:var(--blue); color:white; border:none; padding:15px 30px; border-radius:15px; font-weight:900; font-size:11px; text-transform:uppercase; cursor:pointer;">Guardar Cambios</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="openModalCat()" class="btn-action btn-orange"><i data-lucide="tag" size="14"></i> Nueva Categoría</button>
+                        <button onclick="openModalProd()" class="btn-action btn-blue"><i data-lucide="plus" size="14"></i> Nueva Prenda</button>
                     </div>
                 </div>
+
+                <table class="inv-table">
+                    <thead>
+                        <tr><th>Prenda</th><th>Categoría</th><th>Venta</th><th>Stock</th><th>Acción</th></tr>
+                    </thead>
+                    <tbody>
+                        ${prods.length === 0 ? '<tr><td colspan="5" style="text-align:center; padding:50px; color:var(--gray);">No hay prendas registradas.</td></tr>' : ''}
+                        ${prods.map(p => `
+                            <tr>
+                                <td><p style="font-weight:800;">${p.n}</p><p style="font-size:10px; color:var(--gray);">SKU: ${p.sku}</p></td>
+                                <td><span style="background:${p.catColor}15; color:${p.catColor}; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:900;">${p.catName}</span></td>
+                                <td style="font-weight:800; color:var(--blue);">${DB.get('config').currency.sym}${p.v.toLocaleString()}</td>
+                                <td><span class="stock-badge ${p.s < 3 ? 'stock-low' : 'stock-ok'}">${p.s} uds</span></td>
+                                <td><button onclick="delProd(${p.id})" style="color:#ef4444; border:none; background:none; cursor:pointer;"><i data-lucide="trash-2" size="16"></i></button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
         }
 
-        function setCurrency(code) {
-            const config = DB.get('config');
-            config.currency = currencies.find(c => c.code === code);
-            DB.save('config', config);
-            nav('conf');
+        // --- MODALES ---
+        function openModalCat() {
+            document.getElementById('modal-bg').style.display = 'flex';
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-header"><h3>Nueva Categoría</h3><button onclick="closeModal()" class="close-btn"><i data-lucide="x"></i></button></div>
+                <div class="input-group"><span class="input-label">Nombre</span><input type="text" id="cat-n" placeholder="Ej: Vestidos"></div>
+                <div class="input-group"><span class="input-label">Color de Identificación</span><input type="color" id="cat-c" style="height:50px; cursor:pointer;"></div>
+                <button onclick="saveCat()" class="btn-action btn-blue" style="width:100%; justify-content:center; padding:15px; margin-top:10px;">Guardar Categoría</button>
+            `;
+            lucide.createIcons();
         }
 
-        function saveStore() {
-            const config = DB.get('config');
-            config.store = document.getElementById('store-input').value;
-            DB.save('config', config);
-            alert("¡Tienda actualizada!");
-            nav('conf');
+        function openModalProd() {
+            const cats = DB.get('cats');
+            document.getElementById('modal-bg').style.display = 'flex';
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-header"><h3>Nueva Prenda</h3><button onclick="closeModal()" class="close-btn"><i data-lucide="x"></i></button></div>
+                <div class="input-group"><span class="input-label">Nombre del Modelo</span><input type="text" id="p-n"></div>
+                <div class="input-group"><span class="input-label">Categoría</span><select id="p-cat">${cats.map(c => `<option value="${c.id}">${c.n}</option>`).join('')}</select></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group"><span class="input-label">Costo ($)</span><input type="number" id="p-c"></div>
+                    <div class="input-group"><span class="input-label">Venta ($)</span><input type="number" id="p-v"></div>
+                </div>
+                <div class="input-group"><span class="input-label">Stock inicial</span><input type="number" id="p-s"></div>
+                <button onclick="saveProd()" class="btn-action btn-blue" style="width:100%; justify-content:center; padding:15px; margin-top:10px;">Guardar Prenda</button>
+            `;
+            lucide.createIcons();
         }
 
-        window.onload = () => nav('conf');
+        function closeModal() { document.getElementById('modal-bg').style.display = 'none'; }
+
+        function saveCat() {
+            const n = document.getElementById('cat-n').value;
+            const c = document.getElementById('cat-c').value;
+            if(!n) return;
+            const cats = DB.get('cats'); cats.push({id: Date.now(), n, c}); DB.save('cats', cats);
+            closeModal(); nav('inv');
+        }
+
+        function saveProd() {
+            const n = document.getElementById('p-n').value;
+            const catId = document.getElementById('p-cat').value;
+            const c = parseFloat(document.getElementById('p-c').value) || 0;
+            const v = parseFloat(document.getElementById('p-v').value) || 0;
+            const s = parseInt(document.getElementById('p-s').value) || 0;
+            if(!n) return;
+
+            const cat = DB.get('cats').find(x => x.id == catId);
+            const prods = DB.get('prods');
+            prods.push({ id: Date.now(), n, catId, catName: cat.n, catColor: cat.c, c, v, s, sku: 'CLO-'+Math.floor(Math.random()*10000) });
+            DB.save('prods', prods);
+            closeModal(); nav('inv');
+        }
+
+        function delProd(id) {
+            let prods = DB.get('prods'); prods = prods.filter(x => x.id !== id); DB.save('prods', prods); nav('inv');
+        }
+
+        window.onload = () => nav('inv');
     </script>
 </body>
 </html>
