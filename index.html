@@ -5,154 +5,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Elimar POS - Profesional</title>
     
-    <!-- Cargamos Tailwind para que se vea con el diseño del video -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librería de Iconos -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
+        /* --- DISEÑO PROFESIONAL "BLINDADO" (CSS INTERNO) --- */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc;
-            -webkit-tap-highlight-color: transparent;
+
+        :root {
+            --blue: #2563eb;
+            --dark: #0f172a;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --gray: #94a3b8;
         }
 
-        /* Estilo para los botones activos */
-        .sidebar-active { background: #1e293b; color: #3b82f6; border-left: 4px solid #3b82f6; }
-        .mobile-active { color: #2563eb; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* Escondemos el scroll */
-        ::-webkit-scrollbar { display: none; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
 
-        /* Efecto de cristal para el header */
-        .glass-header {
+        /* BARRA LATERAL (PC) */
+        aside {
+            width: 280px;
+            background: var(--dark);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            transition: all 0.3s;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            background: var(--blue);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 20px;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: var(--blue); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+
+        /* HEADER */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; }
+        header {
+            height: 70px;
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(226, 232, 240, 1);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .header-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .currency-badge {
+            background: #eff6ff;
+            color: var(--blue);
+            font-size: 10px;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid #dbeafe;
+        }
+
+        /* CONTENIDO */
+        main { flex: 1; padding: 30px; overflow-y: auto; }
+        .content-card {
+            background: white;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        /* MENÚ INFERIOR (MÓVIL) */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 10px 0 25px;
+            justify-content: space-around;
+            box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.03);
+        }
+
+        .m-nav-item {
+            background: none; border: none;
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--gray); font-size: 9px; font-weight: 800; gap: 5px;
+        }
+        .m-nav-item.active { color: var(--blue); }
+
+        /* ADAPTACIÓN MÓVIL */
+        @media (max-width: 1024px) {
+            aside { display: none; }
+            .mobile-nav { display: flex; }
+            main { padding: 20px; padding-bottom: 100px; }
+            header { padding: 0 20px; }
         }
     </style>
 </head>
-<body class="h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
+<body>
 
-    <!-- 1. BARRA LATERAL (Solo para Computadora) -->
-    <aside class="hidden lg:flex w-72 bg-[#0f172a] text-white flex-col shrink-0 shadow-2xl">
-        <div class="p-8 border-b border-slate-800">
-            <div class="flex items-center gap-4">
-                <div class="bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg shadow-blue-500/20">E</div>
-                <div>
-                    <h1 class="font-black text-sm tracking-tight leading-none uppercase">Elimar</h1>
-                    <p class="text-[9px] text-slate-500 font-bold uppercase mt-1 tracking-widest">Inventarios PRO</p>
-                </div>
+    <!-- BARRA LATERAL -->
+    <aside>
+        <div class="logo-box">
+            <div class="logo-icon">E</div>
+            <div>
+                <p style="font-weight: 800; font-size: 14px; line-height: 1;">ELIMAR</p>
+                <p style="font-size: 9px; color: var(--gray); font-weight: 700; margin-top: 4px;">INVENTARIOS PRO</p>
             </div>
         </div>
-        
-        <nav class="flex-1 py-6 space-y-1">
-            <button onclick="nav('pos')" id="pc-pos" class="sidebar-active w-full flex items-center gap-4 px-8 py-4 text-white font-bold text-sm hover:bg-slate-800 transition-all">
-                <i data-lucide="shopping-cart" size="20"></i> Punto de Venta
-            </button>
-            <button onclick="nav('inv')" id="pc-inv" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
-                <i data-lucide="package" size="20"></i> Inventario & Prendas
-            </button>
-            <button onclick="nav('tkts')" id="pc-tkts" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
-                <i data-lucide="ticket" size="20"></i> Historial Tickets
-            </button>
-            <button onclick="nav('clts')" id="pc-clts" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
-                <i data-lucide="users" size="20"></i> Clientes & Puntos
-            </button>
-            <button onclick="nav('reps')" id="pc-reps" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
-                <i data-lucide="bar-chart-3" size="20"></i> Informes & Ventas
-            </button>
-            <button onclick="nav('conf')" id="pc-conf" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all mt-auto">
-                <i data-lucide="settings" size="20"></i> Configuración
-            </button>
+        <nav class="sidebar-nav">
+            <button onclick="nav('pos')" id="pc-pos" class="nav-item active"><i data-lucide="shopping-cart"></i> Punto de Venta</button>
+            <button onclick="nav('inv')" id="pc-inv" class="nav-item"><i data-lucide="package"></i> Inventario</button>
+            <button onclick="nav('tkts')" id="pc-tkts" class="nav-item"><i data-lucide="ticket"></i> Tickets</button>
+            <button onclick="nav('reps')" id="pc-reps" class="nav-item"><i data-lucide="bar-chart-3"></i> Reportes</button>
+            <button onclick="nav('conf')" id="pc-conf" class="nav-item" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
         </nav>
     </aside>
 
-    <!-- 2. BARRA INFERIOR (Solo para Celular) -->
-    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t flex justify-around p-3 z-50 shadow-[0_-10px_25px_rgba(0,0,0,0.05)]">
-        <button onclick="nav('pos')" id="m-pos" class="mobile-active flex flex-col items-center gap-1 transition-all">
-            <i data-lucide="shopping-cart" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">POS</span>
-        </button>
-        <button onclick="nav('inv')" id="m-inv" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
-            <i data-lucide="package" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Inventario</span>
-        </button>
-        <button onclick="nav('reps')" id="m-reps" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
-            <i data-lucide="bar-chart-3" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Informes</span>
-        </button>
-        <button onclick="nav('conf')" id="m-conf" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
-            <i data-lucide="settings" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Ajustes</span>
-        </button>
-    </nav>
-
-    <!-- 3. ÁREA DE CONTENIDO -->
-    <div class="flex-1 flex flex-col min-w-0 h-full">
-        <!-- HEADER SUPERIOR -->
-        <header class="h-20 glass-header px-6 lg:px-10 flex items-center justify-between shrink-0 sticky top-0 z-40">
-            <h2 id="view-title" class="font-extrabold text-slate-800 text-xl tracking-tight">Punto de Venta</h2>
-            
-            <div class="flex items-center gap-4">
-                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm" id="header-curr">COP ($)</div>
-                <div class="w-11 h-11 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center text-slate-600 shadow-sm">
-                    <i data-lucide="user" size="20"></i>
+    <div class="main-wrapper">
+        <header>
+            <h2 id="view-title" class="header-title">Punto de Venta</h2>
+            <div class="header-right">
+                <div class="currency-badge">COP ($)</div>
+                <div style="width: 35px; height: 35px; background: #f1f5f9; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="user" size="18" style="color: #64748b;"></i>
                 </div>
             </div>
         </header>
 
-        <!-- CONTENEDOR DINÁMICO -->
-        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-10 pb-24 lg:pb-10">
-            <!-- Cargando contenido... -->
-            <div class="h-full flex flex-col items-center justify-center opacity-20">
-                <i data-lucide="loader-2" class="animate-spin mb-4" size="48"></i>
-                <p class="font-bold uppercase tracking-[0.2em] text-xs">Cargando Sistema...</p>
+        <main id="main-content">
+            <div class="content-card">
+                <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i data-lucide="layout" size="30" style="color: #cbd5e1;"></i>
+                </div>
+                <h3 style="font-weight: 800; font-size: 18px;">Bienvenido al Sistema</h3>
+                <p style="color: var(--gray); font-size: 14px; margin-top: 8px;">Cargando módulos funcionales del Paso 2...</p>
             </div>
         </main>
+
+        <!-- MENÚ MÓVIL -->
+        <nav class="mobile-nav">
+            <button onclick="nav('pos')" id="m-pos" class="m-nav-item active"><i data-lucide="shopping-cart"></i>POS</button>
+            <button onclick="nav('inv')" id="m-inv" class="m-nav-item"><i data-lucide="package"></i>STOCK</button>
+            <button onclick="nav('reps')" id="m-reps" class="m-nav-item"><i data-lucide="bar-chart-3"></i>REPORTES</button>
+            <button onclick="nav('conf')" id="m-conf" class="m-nav-item"><i data-lucide="settings"></i>AJUSTES</button>
+        </nav>
     </div>
 
     <script>
-        // Función para cambiar de pantalla
         function nav(view) {
             const container = document.getElementById('main-content');
             const title = document.getElementById('view-title');
             
-            // 1. Estilos de navegación
-            document.querySelectorAll('nav button, aside button').forEach(b => {
-                b.classList.remove('sidebar-active', 'mobile-active', 'text-white', 'text-blue-600');
-                b.classList.add('text-slate-400');
-            });
-            document.getElementById('m-'+view)?.classList.add('mobile-active');
-            document.getElementById('pc-'+view)?.classList.add('sidebar-active', 'text-white');
+            // Botones
+            document.querySelectorAll('.nav-item, .m-nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('m-'+view)?.classList.add('active');
+            document.getElementById('pc-'+view)?.classList.add('active');
 
-            // 2. Títulos
-            const labels = {
-                pos: 'Punto de Venta',
-                inv: 'Inventario & Prendas',
-                tkts: 'Historial de Tickets',
-                clts: 'Clientes & Puntos',
-                reps: 'Informes & Ganancias',
-                conf: 'Configuración del POS'
-            };
+            const labels = { pos: 'Punto de Venta', inv: 'Inventario', tkts: 'Tickets', reps: 'Reportes', conf: 'Ajustes' };
             title.innerText = labels[view];
 
-            // 3. Contenido Temporal (Professional Placeholder)
             container.innerHTML = `
-                <div class="bg-white rounded-[2.5rem] border border-slate-200 p-12 text-center shadow-sm">
-                    <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-200">
-                        <i data-lucide="layout" size="40"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-800 mb-2">Pantalla de ${labels[view]}</h3>
-                    <p class="text-slate-400 text-sm max-w-xs mx-auto">Esta sección está lista para recibir los módulos funcionales en el siguiente paso.</p>
+                <div class="content-card">
+                    <h3 style="font-weight: 800;">Vista de ${labels[view]}</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 10px;">Interfaz profesional lista. Procediendo al Paso 2...</p>
                 </div>
             `;
-            
             lucide.createIcons();
         }
 
-        // Iniciar en POS al cargar
-        window.onload = () => {
-            lucide.createIcons();
-            setTimeout(() => nav('pos'), 500);
-        };
+        window.onload = () => lucide.createIcons();
     </script>
 </body>
 </html>
