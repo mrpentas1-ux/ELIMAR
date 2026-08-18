@@ -3,223 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar POS - Paso 3</title>
+    <title>Elimar POS - Paso 4 Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --blue: #2563eb; --dark: #0f172a; --bg: #f8fafc; --text: #1e293b; --gray: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
-
-        /* NAVEGACIÓN PC */
-        aside { width: 280px; background: var(--dark); display: flex; flex-direction: column; padding: 30px 20px; shrink-0; }
-        .logo-box { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
-        .logo-icon { background: var(--blue); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; }
-        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: var(--gray); border: none; background: transparent; cursor: pointer; text-align: left; font-size: 14px; font-weight: 700; border-radius: 12px; }
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
-        .nav-item.active { background: var(--blue); color: white; }
-
-        /* ÁREA PRINCIPAL */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .currency-badge { background: #eff6ff; color: var(--blue); font-size: 10px; font-weight: 900; padding: 6px 12px; border-radius: 10px; border: 1px solid #dbeafe; }
-        main { flex: 1; padding: 25px; overflow-y: auto; }
-
-        /* INVENTARIO Y TARJETAS */
-        .btn-action { padding: 10px 20px; border-radius: 12px; border: none; font-weight: 800; font-size: 11px; text-transform: uppercase; cursor: pointer; color: white; display: flex; align-items: center; gap: 8px; }
-        .btn-blue { background: var(--blue); }
-        .btn-orange { background: #f97316; }
-
-        .inv-table { width: 100%; background: white; border-radius: 25px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 20px; border-collapse: collapse; }
-        .inv-table th { background: #f8fafc; padding: 15px 20px; text-align: left; font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
-        .inv-table td { padding: 15px 20px; border-bottom: 1px solid #f8fafc; font-size: 13px; font-weight: 600; }
-        .stock-badge { padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 12px; }
-        .stock-ok { background: #f0fdf4; color: #16a34a; }
-        .stock-low { background: #fef2f2; color: #dc2626; }
-
-        /* MODALES (Ventanas Emergentes) */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
-        .modal-card { background: white; width: 100%; max-width: 500px; border-radius: 30px; padding: 30px; position: relative; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .close-btn { background: none; border: none; color: var(--gray); cursor: pointer; }
-
-        /* FORMULARIOS */
-        .input-group { margin-bottom: 15px; }
-        .input-label { font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; display: block; }
-        input, select { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; color: var(--text); outline: none; }
-        input:focus { border-color: var(--blue); }
-
-        /* MOBILE NAV */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px 0 25px; justify-content: space-around; z-index: 100; }
-        .m-nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 9px; font-weight: 800; gap: 5px; }
-        .m-nav-item.active { color: var(--blue); }
-
-        @media (max-width: 1024px) { aside { display: none; } .mobile-nav { display: flex; } main { padding: 20px 20px 100px; } header { padding: 0 20px; } }
+        .nav-item-active { background: #1e293b; color: #3b82f6; border-left: 4px solid #3b82f6; }
+        .m-active { color: #2563eb; }
+        ::-webkit-scrollbar { display: none; }
+        
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e2e8f0; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2563eb; }
+        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col lg:flex-row overflow-hidden">
 
-    <!-- BARRA LATERAL -->
-    <aside>
-        <div class="logo-box">
-            <div class="logo-icon">E</div>
-            <div><p style="font-weight: 800; font-size: 14px;">ELIMAR</p><p style="font-size: 9px; color: var(--gray); font-weight: 700;">INVENTARIOS PRO</p></div>
+    <!-- SIDEBAR PC -->
+    <aside class="hidden lg:flex w-72 bg-[#0f172a] text-white flex-col shrink-0">
+        <div class="p-8 border-b border-slate-800 text-center">
+            <div class="bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black mx-auto mb-2">E</div>
+            <h1 class="font-black text-xs tracking-widest uppercase">Elimar Inventarios</h1>
         </div>
-        <nav class="sidebar-nav">
-            <button onclick="nav('pos')" id="pc-pos" class="nav-item"><i data-lucide="shopping-cart"></i> Ventas</button>
-            <button onclick="nav('inv')" id="pc-inv" class="nav-item active"><i data-lucide="package"></i> Inventario</button>
-            <button onclick="nav('reps')" id="pc-reps" class="nav-item"><i data-lucide="bar-chart-3"></i> Reportes</button>
-            <button onclick="nav('conf')" id="pc-conf" class="nav-item" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
+        <nav class="flex-1 py-6 space-y-1">
+            <button onclick="nav('pos')" id="pc-pos" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all"><i data-lucide="shopping-cart" size="20"></i> Punto de Venta</button>
+            <button onclick="nav('inv')" id="pc-inv" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all"><i data-lucide="package" size="20"></i> Inventario</button>
+            <button onclick="nav('tkts')" id="pc-tkts" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all"><i data-lucide="ticket" size="20"></i> Tickets</button>
+            <button onclick="nav('reps')" id="pc-reps" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all"><i data-lucide="bar-chart-3" size="20"></i> Informes</button>
+            <button onclick="nav('conf')" id="pc-conf" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all mt-auto"><i data-lucide="settings" size="20"></i> Ajustes</button>
         </nav>
     </aside>
 
-    <div class="main-wrapper">
-        <header>
-            <h2 id="view-title" style="font-weight: 800; font-size: 18px;">Inventario</h2>
-            <div class="header-right" style="display: flex; gap: 12px; align-items: center;">
-                <div class="currency-badge" id="header-currency-badge">COP ($)</div>
-                <div style="width: 38px; height: 38px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #64748b;"><i data-lucide="user" size="18"></i></div>
+    <div class="flex-1 flex flex-col min-w-0">
+        <header class="h-20 bg-white border-b px-6 flex items-center justify-between sticky top-0 z-40">
+            <h2 id="view-title" class="font-extrabold text-slate-800 text-xl tracking-tight">Ventas</h2>
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-2xl text-[10px] font-black text-blue-600 uppercase" id="h-curr">COP ($)</div>
+                <div class="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400"><i data-lucide="user" size="20"></i></div>
             </div>
         </header>
-
-        <main id="main-content"></main>
-
-        <nav class="mobile-nav">
-            <button onclick="nav('pos')" id="m-pos" class="m-nav-item"><i data-lucide="shopping-cart"></i>VENTAS</button>
-            <button onclick="nav('inv')" id="m-inv" class="m-nav-item active"><i data-lucide="package"></i>STOCK</button>
-            <button onclick="nav('reps')" id="m-reps" class="m-nav-item"><i data-lucide="bar-chart-3"></i>REPORTES</button>
-            <button onclick="nav('conf')" id="m-conf" class="m-nav-item"><i data-lucide="settings"></i>AJUSTES</button>
-        </nav>
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-10 pb-32"></main>
     </div>
 
-    <!-- MODAL -->
-    <div id="modal-bg" class="modal-overlay">
-        <div id="modal-container" class="modal-card"></div>
-    </div>
+    <!-- NAVEGACIÓN MOVIL -->
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t flex justify-around p-3 z-50 shadow-lg">
+        <button onclick="nav('pos')" id="m-pos" class="flex flex-col items-center gap-1"><i data-lucide="shopping-cart" size="20"></i><span class="text-[9px] font-bold">POS</span></button>
+        <button onclick="nav('inv')" id="m-inv" class="flex flex-col items-center gap-1"><i data-lucide="package" size="20"></i><span class="text-[9px] font-bold">STOCK</span></button>
+        <button onclick="nav('reps')" id="m-reps" class="flex flex-col items-center gap-1"><i data-lucide="bar-chart-3" size="20"></i><span class="text-[9px] font-bold">REPORTES</span></button>
+        <button onclick="nav('conf')" id="m-conf" class="flex flex-col items-center gap-1"><i data-lucide="settings" size="20"></i><span class="text-[9px] font-bold">AJUSTES</span></button>
+    </nav>
 
-    <script>
-        // --- BASE DE DATOS LOCAL ---
-        const DB = {
-            save: (key, val) => localStorage.setItem('elimar_' + key, JSON.stringify(val)),
-            get: (key, def) => JSON.parse(localStorage.getItem('elimar_' + key)) || def,
-            init() {
-                if(!localStorage.getItem('elimar_config')) this.save('config', { store: "ELIMAR", currency: { code: 'COP', sym: '$' } });
-                if(!localStorage.getItem('elimar_cats')) this.save('cats', [{id: 1, n: 'Camisetas & Polos', c: '#3b82f6'}]);
-                if(!localStorage.getItem('elimar_prods')) this.save('prods', []);
+<script>
+    // --- MOTOR DE DATOS ---
+    const DB = {
+        get: (key, def) => JSON.parse(localStorage.getItem('elimar_'+key)) || def,
+        save: (key, val) => localStorage.setItem('elimar_'+key, JSON.stringify(val)),
+        init() {
+            if(!localStorage.getItem('elimar_config')) {
+                this.save('config', { store: "ELIMAR", currency: {code:'COP', sym:'$'}, taxEnabled: true, taxRate: 19 });
+                this.save('prods', []);
+                this.save('tkts', []);
+                this.save('cats', [{id:1, n:'General', c:'#3b82f6'}]);
             }
-        };
-        DB.init();
-
-        function nav(view) {
-            const container = document.getElementById('main-content');
-            const title = document.getElementById('view-title');
-            const config = DB.get('config');
-
-            document.querySelectorAll('.nav-item, .m-nav-item').forEach(b => b.classList.remove('active'));
-            document.getElementById('m-'+view)?.classList.add('active');
-            document.getElementById('pc-'+view)?.classList.add('active');
-            document.getElementById('header-currency-badge').innerText = `${config.currency.code} (${config.currency.sym})`;
-
-            if (view === 'inv') renderInventario(container, title);
-            else {
-                title.innerText = view.toUpperCase();
-                container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--gray); font-weight:700;">Pantalla de ${view} en reconstrucción...</div>`;
-            }
-            lucide.createIcons();
         }
+    };
+    DB.init();
 
-        // --- LÓGICA DE INVENTARIO ---
-        function renderInventario(container, title) {
-            title.innerText = "Control de Inventario";
-            const prods = DB.get('prods');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="openModalCat()" class="btn-action btn-orange"><i data-lucide="tag" size="14"></i> Nueva Categoría</button>
-                        <button onclick="openModalProd()" class="btn-action btn-blue"><i data-lucide="plus" size="14"></i> Nueva Prenda</button>
+    // Variables globales para mantener estado entre pantallas
+    let cart = [];
+    let filterCat = 0;
+    let searchQuery = "";
+
+    function nav(v) {
+        const c = document.getElementById('main-content');
+        const t = document.getElementById('view-title');
+        const config = DB.get('config');
+        
+        document.getElementById('h-curr').innerText = `${config.currency.code} (${config.currency.sym})`;
+        document.querySelectorAll('nav button, aside button').forEach(b => {
+            b.classList.remove('nav-item-active', 'm-active', 'text-white', 'text-blue-600');
+            b.classList.add('text-slate-400');
+        });
+        document.getElementById('m-'+v)?.classList.add('m-active');
+        document.getElementById('pc-'+v)?.classList.add('nav-item-active', 'text-white');
+
+        if(v === 'pos') renderPOS(c, t);
+        else if(v === 'conf') renderConfig(c, t);
+        else c.innerHTML = `<div class="p-20 text-center text-slate-300 font-bold italic uppercase tracking-widest">Pantalla de ${v} lista para el Paso 5.</div>`;
+        
+        lucide.createIcons();
+    }
+
+    const fmt = (n) => `${DB.get('config').currency.sym}${Math.round(n).toLocaleString()}`;
+
+    // --- PUNTO DE VENTA (COMPLETO) ---
+    function renderPOS(c, t) {
+        t.innerText = "Punto de Venta";
+        const config = DB.get('config');
+        const cats = DB.get('cats', []);
+        
+        // Filtrado por categoría y búsqueda
+        let prods = DB.get('prods', []);
+        if(filterCat != 0) prods = prods.filter(p => p.catId == filterCat);
+        if(searchQuery) prods = prods.filter(p => p.n.toLowerCase().includes(searchQuery.toLowerCase()) || p.sku.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        // Totales del carrito
+        const sub = cart.reduce((s, i) => s + i.v, 0);
+        const taxRate = config.taxEnabled ? config.taxRate : 0;
+        const iva = sub * (taxRate / 100);
+        const total = sub + iva;
+
+        c.innerHTML = `
+            <div class="flex flex-col lg:flex-row gap-8 h-full">
+                <div class="flex-1">
+                    <!-- Buscador (Como en tu video) -->
+                    <div class="relative mb-6">
+                        <i data-lucide="search" class="absolute left-4 top-3.5 text-slate-400" size="18"></i>
+                        <input type="text" placeholder="Buscar prenda por nombre o SKU..." value="${searchQuery}" 
+                               oninput="searchQuery=this.value; renderPOS_List()" 
+                               class="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm outline-none focus:border-blue-500">
+                    </div>
+
+                    <!-- Filtro Categorías -->
+                    <div class="flex gap-2 overflow-x-auto pb-4 mb-6">
+                        <button onclick="filterCat=0;nav('pos')" class="px-5 py-2 rounded-full font-bold text-[11px] whitespace-nowrap ${filterCat==0?'bg-blue-600 text-white shadow-lg shadow-blue-100':'bg-white border text-slate-500'}">Todo el Catálogo</button>
+                        ${cats.map(cat => `
+                            <button onclick="filterCat=${cat.id};nav('pos')" class="px-5 py-2 rounded-full font-bold text-[11px] whitespace-nowrap ${filterCat==cat.id?'bg-blue-600 text-white shadow-lg shadow-blue-100':'bg-white border text-slate-500'}">${cat.n}</button>
+                        `).join('')}
+                    </div>
+
+                    <div id="pos-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        ${renderProdsGrid(prods)}
                     </div>
                 </div>
 
-                <table class="inv-table">
-                    <thead>
-                        <tr><th>Prenda</th><th>Categoría</th><th>Venta</th><th>Stock</th><th>Acción</th></tr>
-                    </thead>
-                    <tbody>
-                        ${prods.length === 0 ? '<tr><td colspan="5" style="text-align:center; padding:50px; color:var(--gray);">No hay prendas registradas.</td></tr>' : ''}
-                        ${prods.map(p => `
-                            <tr>
-                                <td><p style="font-weight:800;">${p.n}</p><p style="font-size:10px; color:var(--gray);">SKU: ${p.sku}</p></td>
-                                <td><span style="background:${p.catColor}15; color:${p.catColor}; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:900;">${p.catName}</span></td>
-                                <td style="font-weight:800; color:var(--blue);">${DB.get('config').currency.sym}${p.v.toLocaleString()}</td>
-                                <td><span class="stock-badge ${p.s < 3 ? 'stock-low' : 'stock-ok'}">${p.s} uds</span></td>
-                                <td><button onclick="delProd(${p.id})" style="color:#ef4444; border:none; background:none; cursor:pointer;"><i data-lucide="trash-2" size="16"></i></button></td>
-                            </tr>
+                <!-- PANEL TICKET -->
+                <div class="w-full lg:w-96 bg-white rounded-[2.5rem] border shadow-xl p-6 flex flex-col h-fit sticky bottom-4 lg:top-10">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Ticket de Venta</h4>
+                        <button onclick="cart=[];nav('pos')" class="text-red-500 text-[10px] font-black uppercase">Vaciar</button>
+                    </div>
+                    <div id="cart-list" class="flex-1 space-y-3 mb-6 max-h-48 overflow-y-auto">
+                        ${cart.length === 0 ? '<p class="text-center text-slate-300 py-10 italic text-sm">Carrito vacío</p>' : ''}
+                        ${cart.map((i, idx) => `
+                            <div class="flex justify-between items-center text-xs font-bold animate-in fade-in duration-200">
+                                <span class="truncate pr-4 font-black">${i.n}</span>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="text-slate-400">${fmt(i.v)}</span>
+                                    <button onclick="cart.splice(${idx},1);nav('pos')" class="text-red-300"><i data-lucide="x-circle" size="14"></i></button>
+                                </div>
+                            </div>
                         `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        // --- MODALES ---
-        function openModalCat() {
-            document.getElementById('modal-bg').style.display = 'flex';
-            document.getElementById('modal-container').innerHTML = `
-                <div class="modal-header"><h3>Nueva Categoría</h3><button onclick="closeModal()" class="close-btn"><i data-lucide="x"></i></button></div>
-                <div class="input-group"><span class="input-label">Nombre</span><input type="text" id="cat-n" placeholder="Ej: Vestidos"></div>
-                <div class="input-group"><span class="input-label">Color de Identificación</span><input type="color" id="cat-c" style="height:50px; cursor:pointer;"></div>
-                <button onclick="saveCat()" class="btn-action btn-blue" style="width:100%; justify-content:center; padding:15px; margin-top:10px;">Guardar Categoría</button>
-            `;
-            lucide.createIcons();
-        }
-
-        function openModalProd() {
-            const cats = DB.get('cats');
-            document.getElementById('modal-bg').style.display = 'flex';
-            document.getElementById('modal-container').innerHTML = `
-                <div class="modal-header"><h3>Nueva Prenda</h3><button onclick="closeModal()" class="close-btn"><i data-lucide="x"></i></button></div>
-                <div class="input-group"><span class="input-label">Nombre del Modelo</span><input type="text" id="p-n"></div>
-                <div class="input-group"><span class="input-label">Categoría</span><select id="p-cat">${cats.map(c => `<option value="${c.id}">${c.n}</option>`).join('')}</select></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group"><span class="input-label">Costo ($)</span><input type="number" id="p-c"></div>
-                    <div class="input-group"><span class="input-label">Venta ($)</span><input type="number" id="p-v"></div>
+                    </div>
+                    <div class="border-t border-dashed pt-4 space-y-1">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+                        ${config.taxEnabled ? `<div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest"><span>IVA (${config.taxRate}%)</span><span>${fmt(iva)}</span></div>` : ''}
+                        <div class="flex justify-between text-2xl font-black text-slate-900 pt-3 tracking-tighter leading-none uppercase"><span>Total</span><span>${fmt(total)}</span></div>
+                    </div>
+                    <button onclick="finalizarVenta(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-sm mt-6 shadow-xl shadow-blue-200 active:bg-blue-800 disabled:opacity-20" ${cart.length === 0 ? 'disabled' : ''}>COBRAR</button>
                 </div>
-                <div class="input-group"><span class="input-label">Stock inicial</span><input type="number" id="p-s"></div>
-                <button onclick="saveProd()" class="btn-action btn-blue" style="width:100%; justify-content:center; padding:15px; margin-top:10px;">Guardar Prenda</button>
-            `;
-            lucide.createIcons();
-        }
+            </div>
+        `;
+        lucide.createIcons();
+    }
 
-        function closeModal() { document.getElementById('modal-bg').style.display = 'none'; }
+    function renderProdsGrid(list) {
+        if(list.length === 0) return `<div class="col-span-full py-20 text-center text-slate-300 font-bold">No hay prendas que coincidan.</div>`;
+        return list.map(p => `
+            <div onclick="addCart(${p.id})" class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm cursor-pointer active:scale-95 transition-all">
+                <div class="aspect-square rounded-2xl mb-4 flex items-center justify-center text-4xl font-black" style="background:${p.catColor}15; color:${p.catColor}">${p.n[0]}</div>
+                <h3 class="font-bold text-xs text-slate-700 truncate leading-none mb-1">${p.n}</h3>
+                <div class="flex justify-between items-center mt-1">
+                    <span class="text-blue-600 font-black text-sm tracking-tight">${fmt(p.v)}</span>
+                    <span class="text-[8px] font-black uppercase text-slate-400">Stock: ${p.s}</span>
+                </div>
+            </div>
+        `).join('');
+    }
 
-        function saveCat() {
-            const n = document.getElementById('cat-n').value;
-            const c = document.getElementById('cat-c').value;
-            if(!n) return;
-            const cats = DB.get('cats'); cats.push({id: Date.now(), n, c}); DB.save('cats', cats);
-            closeModal(); nav('inv');
-        }
+    // Función rápida para el buscador
+    function renderPOS_List() {
+        const grid = document.getElementById('pos-grid');
+        let list = DB.get('prods', []);
+        if(filterCat != 0) list = list.filter(p => p.catId == filterCat);
+        if(searchQuery) list = list.filter(p => p.n.toLowerCase().includes(searchQuery.toLowerCase()) || p.sku.toLowerCase().includes(searchQuery.toLowerCase()));
+        grid.innerHTML = renderProdsGrid(list);
+    }
 
-        function saveProd() {
-            const n = document.getElementById('p-n').value;
-            const catId = document.getElementById('p-cat').value;
-            const c = parseFloat(document.getElementById('p-c').value) || 0;
-            const v = parseFloat(document.getElementById('p-v').value) || 0;
-            const s = parseInt(document.getElementById('p-s').value) || 0;
-            if(!n) return;
+    function addCart(id) {
+        const p = DB.get('prods', []).find(x => x.id === id);
+        if(p.s <= 0) return alert("¡Producto Agotado!");
+        cart.push({...p});
+        nav('pos');
+    }
 
-            const cat = DB.get('cats').find(x => x.id == catId);
-            const prods = DB.get('prods');
-            prods.push({ id: Date.now(), n, catId, catName: cat.n, catColor: cat.c, c, v, s, sku: 'CLO-'+Math.floor(Math.random()*10000) });
-            DB.save('prods', prods);
-            closeModal(); nav('inv');
-        }
+    function finalizarVenta(total) {
+        const prods = DB.get('prods', []);
+        cart.forEach(item => {
+            if(item.id) {
+                const idx = prods.findIndex(x => x.id == item.id);
+                if(idx != -1) prods[idx].s -= 1;
+            }
+        });
+        DB.save('prods', prods);
+        const tkts = DB.get('tkts', []);
+        tkts.unshift({ id: Date.now(), f: new Date().toLocaleString(), t: total, i: [...cart] });
+        DB.save('tkts', tkts);
+        cart = [];
+        alert("¡Venta cobrada con éxito!");
+        nav('pos');
+    }
 
-        function delProd(id) {
-            let prods = DB.get('prods'); prods = prods.filter(x => x.id !== id); DB.save('prods', prods); nav('inv');
-        }
+    // --- CONFIGURACIÓN ---
+    function renderConfig(c, t) {
+        t.innerText = "Configuración";
+        const config = DB.get('config');
+        c.innerHTML = `
+            <div class="max-w-3xl mx-auto space-y-8">
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                    <h3 class="font-black text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-8">Gestión de Impuestos (IVA)</h3>
+                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-3xl mb-6">
+                        <div><p class="font-black text-sm text-slate-800">Cobrar Impuesto</p><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Habilita el cálculo del IVA en el ticket</p></div>
+                        <label class="switch"><input type="checkbox" id="tax-toggle" ${config.taxEnabled ? 'checked' : ''} onchange="updateTax()"><span class="slider"></span></label>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Tasa de Impuesto (%)</label>
+                        <div class="relative"><input type="number" id="tax-input" value="${config.taxRate}" oninput="updateTax()" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-black focus:border-blue-500 outline-none"><span class="absolute right-6 top-5 font-black text-slate-300">%</span></div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 leading-none">Moneda Principal</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        ${['COP', 'USD', 'EUR', 'MXN', 'PEN', 'CLP', 'ARS'].map(cur => `
+                            <button onclick="setCur('${cur}')" class="p-4 border-2 rounded-2xl font-black text-sm ${config.currency.code == cur ? 'border-blue-600 bg-blue-50 text-blue-600' : 'border-slate-100 text-slate-400'}">${cur}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-        window.onload = () => nav('inv');
-    </script>
+    function updateTax() {
+        const config = DB.get('config');
+        config.taxEnabled = document.getElementById('tax-toggle').checked;
+        config.taxRate = parseFloat(document.getElementById('tax-input').value) || 0;
+        DB.save('config', config);
+    }
+
+    function setCur(code) {
+        const config = DB.get('config');
+        const syms = { COP: '$', USD: '$', EUR: '€', MXN: '$', PEN: 'S/', CLP: '$', ARS: '$' };
+        config.currency = { code, sym: syms[code] };
+        DB.save('config', config);
+        nav('conf');
+    }
+
+    window.onload = () => nav('pos');
+</script>
 </body>
 </html>
