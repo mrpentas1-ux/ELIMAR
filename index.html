@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar POS - Paso 6 Profesional</title>
+    <title>Elimar POS - Versión Facturación Pro</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* CSS BLINDADO - ESTILO LOYVERSE PREMIUM */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --blue: #2563eb; --dark: #0f172a; --bg: #f8fafc; --text: #1e293b; --gray: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
 
-        /* Estructura Sidebar y Main */
+        /* Estructura Base */
         aside { width: 280px; background: var(--dark); display: flex; flex-direction: column; padding: 30px 20px; shrink-0; }
         .logo-box { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
         .logo-icon { background: var(--blue); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; }
-        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: var(--gray); border: none; background: transparent; cursor: pointer; text-align: left; font-size: 14px; font-weight: 700; border-radius: 12px; transition: 0.2s; }
+        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: var(--gray); border: none; background: transparent; cursor: pointer; text-align: left; font-size: 14px; font-weight: 700; border-radius: 12px; }
         .nav-item.active { background: var(--blue); color: white; }
         
         .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         header { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; shrink-0; }
-        .currency-badge { background: #eff6ff; color: var(--blue); font-size: 10px; font-weight: 900; padding: 6px 12px; border-radius: 10px; border: 1px solid #dbeafe; }
         main { flex: 1; padding: 25px; overflow-y: auto; }
 
-        /* Tarjetas y Reportes */
-        .card-report { background: white; padding: 25px; border-radius: 30px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 15px; flex: 1; }
-        .tab-btn { padding: 8px 15px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-size: 10px; font-weight: 800; cursor: pointer; }
-        .tab-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+        /* Selector de Monedas (Arreglado para que se vea profesional) */
+        .curr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
+        .curr-card { background: white; border: 2px solid #f1f5f9; border-radius: 20px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .curr-card.active { border-color: var(--blue); background: #eff6ff; }
+        .curr-card p:first-child { font-weight: 900; font-size: 16px; color: var(--dark); }
+        .curr-card p:nth-child(2) { font-weight: 800; font-size: 16px; color: var(--blue); margin: 2px 0; }
+        .curr-card p:last-child { font-size: 8px; font-weight: 800; color: var(--gray); text-transform: uppercase; }
 
-        /* Punto de Venta */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .pos-card { background: white; padding: 15px; border-radius: 25px; border: 1px solid #f1f5f9; text-align: center; cursor: pointer; transition: 0.2s; }
-        .pos-card:active { transform: scale(0.95); }
-
-        /* Modal */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
-        .modal-card { background: white; width: 100%; max-width: 450px; border-radius: 30px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        input, select { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; margin-bottom: 15px; outline: none; }
+        /* Secciones de Ajustes */
+        .settings-block { background: white; border-radius: 30px; border: 1px solid #e2e8f0; padding: 25px; margin-bottom: 20px; }
+        .section-title { font-size: 10px; font-weight: 900; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .input-label { font-size: 10px; font-weight: 800; color: var(--gray); margin-bottom: 6px; display: block; }
+        input, select, textarea { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; margin-bottom: 15px; outline: none; font-size: 13px; }
+        
+        /* POS & Inventario */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-blue { width: 100%; background: var(--blue); color: white; border: none; padding: 18px; border-radius: 20px; font-weight: 900; cursor: pointer; }
 
         /* Mobile Nav */
         .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px 0 25px; justify-content: space-around; z-index: 100; }
@@ -50,15 +51,11 @@
 <body>
 
     <aside>
-        <div class="logo-box">
-            <div class="logo-icon">E</div>
-            <div><p style="font-weight: 800; font-size: 14px;">ELIMAR</p><p style="font-size: 9px; color: var(--gray); font-weight: 700; text-transform: uppercase;">Inventarios Pro</p></div>
-        </div>
+        <div class="logo-box"><div class="logo-icon">E</div><div><p style="font-weight: 800; font-size: 14px;">ELIMAR</p><p style="font-size: 9px; color: var(--gray); font-weight: 700;">GESTIÓN POS</p></div></div>
         <nav class="sidebar-nav">
-            <button onclick="nav('pos')" id="pc-pos" class="nav-item active"><i data-lucide="shopping-cart"></i> Punto de Venta</button>
-            <button onclick="nav('inv')" id="pc-inv" class="nav-item"><i data-lucide="package"></i> Inventario</button>
-            <button onclick="nav('tkts')" id="pc-tkts" class="nav-item"><i data-lucide="ticket"></i> Tickets</button>
-            <button onclick="nav('clts')" id="pc-clts" class="nav-item"><i data-lucide="users"></i> Clientes</button>
+            <button onclick="nav('pos')" id="pc-pos" class="nav-item active"><i data-lucide="shopping-cart"></i> Ventas</button>
+            <button onclick="nav('inv')" id="pc-inv" class="nav-item"><i data-lucide="package"></i> Stock</button>
+            <button onclick="nav('tkts')" id="pc-tkts" class="nav-item"><i data-lucide="ticket"></i> Historial</button>
             <button onclick="nav('reps')" id="pc-reps" class="nav-item"><i data-lucide="bar-chart-3"></i> Informes</button>
             <button onclick="nav('conf')" id="pc-conf" class="nav-item" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
         </nav>
@@ -66,36 +63,34 @@
 
     <div class="main-wrapper">
         <header>
-            <h2 id="view-title" style="font-weight: 800; font-size: 18px;">Punto de Venta</h2>
-            <div class="header-right" style="display: flex; gap: 10px; align-items: center;">
-                <div class="currency-badge" id="h-curr-badge">COP ($)</div>
-                <div style="width: 38px; height: 38px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><i data-lucide="user" size="18"></i></div>
-            </div>
+            <h2 id="view-title" style="font-weight: 800; font-size: 18px;">Cargando...</h2>
+            <div id="h-curr-badge" style="background:#eff6ff; color:var(--blue); font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px; border:1px solid #dbeafe;">COP ($)</div>
         </header>
-
         <main id="main-content"></main>
-
         <nav class="mobile-nav">
             <button onclick="nav('pos')" id="m-pos" class="m-nav-item active"><i data-lucide="shopping-cart"></i>VENTAS</button>
             <button onclick="nav('inv')" id="m-inv" class="m-nav-item"><i data-lucide="package"></i>STOCK</button>
             <button onclick="nav('tkts')" id="m-tkts" class="m-nav-item"><i data-lucide="ticket"></i>FACTURAS</button>
-            <button onclick="nav('reps')" id="m-reps" class="m-nav-item"><i data-lucide="bar-chart-3"></i>INFORMES</button>
             <button onclick="nav('conf')" id="m-conf" class="m-nav-item"><i data-lucide="settings"></i>AJUSTES</button>
         </nav>
     </div>
 
-    <div id="modal-bg" class="modal-overlay"><div id="modal-container" class="modal-card"></div></div>
-
 <script>
-    // --- MOTOR DE DATOS ---
     const DB = {
         save: (key, val) => localStorage.setItem('elimar_'+key, JSON.stringify(val)),
         get: (key, def) => JSON.parse(localStorage.getItem('elimar_'+key)) || def,
         init() {
-            if(!localStorage.getItem('elimar_config')) this.save('config', { store: "ELIMAR", currency: {code:'COP', sym:'$'}, taxOn: true, taxRate: 19 });
+            if(!localStorage.getItem('elimar_config')) {
+                this.save('config', { 
+                    store: "ELIMAR INVENTARIOS", 
+                    nit: "", address: "", tel: "", 
+                    msg: "¡Gracias por su compra!",
+                    currency: {code:'COP', sym:'$', name:'Peso Colombiano'},
+                    taxOn: true, taxRate: 19
+                });
+            }
             if(!localStorage.getItem('elimar_prods')) this.save('prods', []);
             if(!localStorage.getItem('elimar_tkts')) this.save('tkts', []);
-            if(!localStorage.getItem('elimar_clts')) this.save('clts', []);
         }
     };
     DB.init();
@@ -116,165 +111,116 @@
         if(view === 'pos') renderPOS(c, t);
         if(view === 'inv') renderInv(c, t);
         if(view === 'tkts') renderTkts(c, t);
-        if(view === 'clts') renderClts(c, t);
-        if(view === 'reps') renderReps(c, t);
         if(view === 'conf') renderConf(c, t);
         lucide.createIcons();
     }
 
-    // --- POS (CON SELECCIÓN DE PAGO) ---
+    // --- POS ---
     function renderPOS(c, t) {
-        t.innerText = "Ventas";
+        t.innerText = "Punto de Venta";
         const prods = DB.get('prods');
+        const conf = DB.get('config');
         const sub = cart.reduce((s, i) => s + i.v, 0);
-        const total = sub * (DB.get('config').taxOn ? (1 + DB.get('config').taxRate/100) : 1);
+        const iva = conf.taxOn ? sub * (conf.taxRate/100) : 0;
+        const total = sub + iva;
 
         c.innerHTML = `
-            <div class="grid">${prods.map(p => `
-                <div class="pos-card" onclick="addCart(${p.id})">
-                    <div style="background:${p.catColor || '#3b82f6'}15; color:${p.catColor || '#3b82f6'}; border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:900; margin-bottom:10px;">${p.n[0]}</div>
-                    <p style="font-weight:bold; font-size:12px;">${p.n}</p>
-                    <p style="color:var(--blue); font-weight:900;">${fmt(p.v)}</p>
-                </div>`).join('')}</div>
+            <div class="grid">${prods.map(p => `<div class="pos-card" onclick="addCart(${p.id})"><div style="background:#eff6ff; color:var(--blue); border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:900; margin-bottom:10px;">${p.n[0]}</div><p style="font-weight:bold; font-size:12px;">${p.n}</p><p style="color:var(--blue); font-weight:900;">${fmt(p.v)}</p></div>`).join('')}</div>
             <div style="background:white; border-radius:30px; border:1px solid #e2e8f0; padding:25px; margin-top:20px; position:sticky; bottom:0;">
-                <div style="display:flex; justify-content:space-between; font-weight:900; font-size:20px;"><span>TOTAL</span><span>${fmt(total)}</span></div>
-                <button onclick="modalCobro(${total})" style="width:100%; background:var(--blue); color:white; border:none; padding:18px; border-radius:20px; font-weight:900; margin-top:15px;" ${cart.length===0?'disabled opacity-30':''}>COBRAR</button>
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); font-weight:800; margin-bottom:5px;"><span>SUBTOTAL</span><span>${fmt(sub)}</span></div>
+                ${conf.taxOn ? `<div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); font-weight:800; margin-bottom:10px;"><span>IVA (${conf.taxRate}%)</span><span>${fmt(iva)}</span></div>` : ''}
+                <div style="display:flex; justify-content:space-between; font-weight:900; font-size:22px;"><span>TOTAL</span><span>${fmt(total)}</span></div>
+                <button onclick="pagar(${total})" class="btn-pay btn-blue" style="margin-top:15px;" ${cart.length===0?'disabled opacity-30':''}>FINALIZAR VENTA</button>
             </div>
         `;
     }
 
-    function addCart(id) {
-        const p = DB.get('prods').find(x => x.id === id);
-        if(p.s <= 0) return alert("Agotado");
-        cart.push({...p});
-        nav('pos');
-    }
-
-    function modalCobro(total) {
-        document.getElementById('modal-bg').style.display = 'flex';
-        document.getElementById('modal-container').innerHTML = `
-            <h3 style="font-weight:900; margin-bottom:20px;">Finalizar Venta</h3>
-            <p style="font-size:10px; font-weight:800; color:var(--gray); margin-bottom:10px;">MÉTODO DE PAGO</p>
-            <select id="pago-metodo">
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta / Datáfono</option>
-                <option value="Transferencia">Transferencia / QR</option>
-            </select>
-            <button onclick="finalizarVenta(${total})" style="width:100%; background:var(--blue); color:white; border:none; padding:15px; border-radius:15px; font-weight:900;">REGISTRAR ${fmt(total)}</button>
-        `;
-    }
-
-    function finalizarVenta(total) {
-        const metodo = document.getElementById('pago-metodo').value;
+    function addCart(id) { const p = DB.get('prods').find(x => x.id === id); if(p.s <= 0) return alert("Agotado"); cart.push({...p}); nav('pos'); }
+    function pagar(total) {
         const tkts = DB.get('tkts');
-        tkts.unshift({ id: Date.now(), f: new Date().toLocaleString(), t: total, m: metodo, i: [...cart], d: new Date().toISOString().split('T')[0] });
+        tkts.unshift({ id: Date.now(), f: new Date().toLocaleString(), t: total, i: [...cart] });
         DB.save('tkts', tkts);
-        
         const prods = DB.get('prods');
         cart.forEach(it => { const idx = prods.findIndex(x => x.id == it.id); if(idx!=-1) prods[idx].s -= 1; });
         DB.save('prods', prods);
-        
-        cart = []; document.getElementById('modal-bg').style.display = 'none';
-        alert("Venta finalizada en " + metodo);
-        nav('pos');
+        cart = []; alert("Venta registrada"); nav('pos');
     }
 
-    // --- CLIENTES (NUEVO) ---
-    function renderClts(c, t) {
-        t.innerText = "Directorio de Clientes";
-        const clts = DB.get('clts');
-        c.innerHTML = `
-            <button onclick="modalClt()" style="width:100%; padding:15px; background:var(--blue); color:white; border-radius:15px; font-weight:900; margin-bottom:20px; border:none;">+ NUEVO CLIENTE</button>
-            <div style="background:white; border-radius:25px; border:1px solid #e2e8f0; overflow:hidden;">
-                ${clts.map(cl => `<div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between; align-items:center;">
-                    <div><p style="font-weight:800; font-size:14px;">${cl.n}</p><p style="font-size:10px; color:var(--gray);">${cl.t}</p></div>
-                    <p style="font-weight:900; color:var(--blue);">${cl.p || 0} pts</p>
-                </div>`).join('')}
-            </div>
-        `;
-    }
-
-    function modalClt() {
-        document.getElementById('modal-bg').style.display = 'flex';
-        document.getElementById('modal-container').innerHTML = `
-            <h3 style="font-weight:900; margin-bottom:20px;">Registrar Cliente</h3>
-            <input type="text" id="cl-n" placeholder="Nombre completo">
-            <input type="text" id="cl-t" placeholder="Teléfono">
-            <button onclick="saveClt()" style="width:100%; background:var(--blue); color:white; border:none; padding:15px; border-radius:15px; font-weight:900;">REGISTRAR</button>
-        `;
-    }
-
-    function saveClt() {
-        const n = document.getElementById('cl-n').value;
-        const t = document.getElementById('cl-t').value;
-        if(!n) return;
-        const clts = DB.get('clts'); clts.push({id: Date.now(), n, t, p: 0}); DB.save('clts', clts);
-        document.getElementById('modal-bg').style.display = 'none'; nav('clts');
-    }
-
-    // --- REPORTES (FOTO 2 MEJORADA) ---
-    function renderReps(c, t) {
-        t.innerText = "Informes de Ventas";
-        const tkts = DB.get('tkts');
-        const hoyStr = new Date().toISOString().split('T')[0];
-        
-        const ventasHoy = tkts.filter(tk => tk.d === hoyStr).reduce((s, tk) => s + tk.t, 0);
-        const ventasTotal = tkts.reduce((s, tk) => s + tk.t, 0);
-        
-        // Ventas por medio de pago
-        const porMetodo = { Efectivo: 0, Tarjeta: 0, Transferencia: 0 };
-        tkts.forEach(tk => { if(porMetodo[tk.m] !== undefined) porMetodo[tk.m] += tk.t; });
+    // --- CONFIGURACIÓN COMPLETA (PASO 7) ---
+    function renderConf(c, t) {
+        t.innerText = "Configuración del Sistema";
+        const conf = DB.get('config');
+        const currs = [
+            {code:'COP', sym:'$', name:'Peso Colombiano'}, {code:'USD', sym:'$', name:'Dólar US'},
+            {code:'EUR', sym:'€', name:'Euro'}, {code:'PEN', sym:'S/', name:'Sol Peruano'},
+            {code:'MXN', sym:'$', name:'Peso Mexicano'}, {code:'CLP', sym:'$', name:'Peso Chileno'}
+        ];
 
         c.innerHTML = `
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="tab-btn active">HOY</button>
-                <button class="tab-btn">HISTÓRICO</button>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                <div class="card-report"><p style="font-size:10px; font-weight:900; color:var(--gray);">VENTAS DE HOY</p><p style="font-size:32px; font-weight:900; color:var(--blue);">${fmt(ventasHoy)}</p></div>
-                <div class="card-report"><p style="font-size:10px; font-weight:900; color:var(--gray);">VENTAS TOTALES</p><p style="font-size:32px; font-weight:900;">${fmt(ventasTotal)}</p></div>
-                
-                <div style="background:white; border-radius:25px; border:1px solid #e2e8f0; padding:20px;">
-                    <p style="font-size:10px; font-weight:900; color:var(--gray); margin-bottom:15px;">VENTAS POR MEDIO DE PAGO</p>
-                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;"><span>💵 Efectivo</span><span style="font-weight:900;">${fmt(porMetodo.Efectivo)}</span></div>
-                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;"><span>💳 Tarjeta</span><span style="font-weight:900;">${fmt(porMetodo.Tarjeta)}</span></div>
-                    <div style="display:flex; justify-content:space-between; font-size:12px;"><span>📱 Transferencia</span><span style="font-weight:900;">${fmt(porMetodo.Transferencia)}</span></div>
+            <!-- MONEDA -->
+            <div class="settings-block">
+                <div class="section-title"><i data-lucide="globe" size="14"></i> Moneda Principal</div>
+                <div class="curr-grid">
+                    ${currs.map(cur => `
+                        <div class="curr-card ${conf.currency.code===cur.code?'active':''}" onclick="setCur('${cur.code}')">
+                            <p>${cur.code}</p><p>${cur.sym}</p><p>${cur.name}</p>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
+
+            <!-- DATOS DE EMPRESA -->
+            <div class="settings-block">
+                <div class="section-title"><i data-lucide="store" size="14"></i> Datos de la Tienda</div>
+                <label class="input-label">Nombre Comercial</label>
+                <input type="text" id="c-store" value="${conf.store}">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div><label class="input-label">NIT / RUT</label><input type="text" id="c-nit" value="${conf.nit}"></div>
+                    <div><label class="input-label">Teléfono</label><input type="text" id="c-tel" value="${conf.tel}"></div>
+                </div>
+                <label class="input-label">Dirección Física</label>
+                <input type="text" id="c-addr" value="${conf.address}">
+            </div>
+
+            <!-- IMPUESTOS -->
+            <div class="settings-block">
+                <div class="section-title"><i data-lucide="percent" size="14"></i> Impuestos e IVA</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <p style="font-weight:700; font-size:13px;">Habilitar cobro de IVA</p>
+                    <input type="checkbox" id="c-tax-on" ${conf.taxOn?'checked':''} style="width:30px; margin:0;">
+                </div>
+                <label class="input-label">Porcentaje de Impuesto (%)</label>
+                <input type="number" id="c-tax-rate" value="${conf.taxRate}">
+            </div>
+
+            <button onclick="saveAllConf()" class="btn-blue" style="margin-bottom:40px;">GUARDAR TODOS LOS CAMBIOS</button>
         `;
     }
 
-    // Módulos restantes (Inv, Tkts, Conf) se mantienen iguales o mejorados
-    function renderInv(c, t) {
-        t.innerText = "Inventario";
-        c.innerHTML = `<button onclick="modalProd()" style="width:100%; padding:15px; background:var(--blue); color:white; border-radius:15px; font-weight:900; border:none; margin-bottom:20px;">+ NUEVA PRENDA</button>
-        <div style="background:white; border-radius:25px; border:1px solid #e2e8f0; overflow:hidden;">
-            ${DB.get('prods').map(p => `<div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between; align-items:center;">
-                <div><p style="font-weight:800; font-size:14px;">${p.n}</p><p style="font-size:9px; color:var(--gray);">STOCK: ${p.s} uds</p></div>
-                <p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p>
-            </div>`).join('')}</div>`;
-    }
-    function renderTkts(c, t) { t.innerText = "Historial"; c.innerHTML = DB.get('tkts').map(tk => `<div style="background:white; padding:15px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><p style="font-weight:800;">TKT-${tk.id.toString().slice(-4)}</p><p style="font-size:9px; color:var(--gray);">${tk.f} (${tk.m})</p></div><p style="font-weight:900;">${fmt(tk.t)}</p></div>`).join(''); }
-    function renderConf(c, t) {
-        t.innerText = "Ajustes";
-        const conf = DB.get('config');
-        const currs = [{code:'COP', sym:'$'}, {code:'USD', sym:'$'}, {code:'EUR', sym:'€'}, {code:'PEN', sym:'S/'}, {code:'MXN', sym:'$'}];
-        c.innerHTML = `<p style="font-size:10px; font-weight:900; color:var(--gray); margin-bottom:15px;">MONEDA PRINCIPAL</p><div class="curr-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
-            ${currs.map(cur => `<div class="curr-btn ${conf.currency.code===cur.code?'active':''}" onclick="setCur('${cur.code}')"><p>${cur.code}</p><p style="color:var(--blue);">${cur.sym}</p></div>`).join('')}</div>
-            <button onclick="localStorage.clear(); location.reload();" style="margin-top:40px; border:none; background:none; color:red; font-size:10px; font-weight:900; width:100%;">VACIAR BASE DE DATOS</button>`;
-    }
     function setCur(code) {
-        const currs = [{code:'COP', sym:'$'}, {code:'USD', sym:'$'}, {code:'EUR', sym:'€'}, {code:'PEN', sym:'S/'}, {code:'MXN', sym:'$'}];
-        const conf = DB.get('config'); conf.currency = currs.find(c => c.code === code); DB.save('config', conf); nav('conf');
+        const currs = [{code:'COP', sym:'$', name:'Peso Colombiano'}, {code:'USD', sym:'$', name:'Dólar US'}, {code:'EUR', sym:'€', name:'Euro'}, {code:'PEN', sym:'S/', name:'Sol Peruano'}, {code:'MXN', sym:'$', name:'Peso Mexicano'}, {code:'CLP', sym:'$', name:'Peso Chileno'}];
+        const conf = DB.get('config');
+        conf.currency = currs.find(c => c.code === code);
+        DB.save('config', conf);
+        nav('conf');
     }
-    function modalProd() {
-        document.getElementById('modal-bg').style.display = 'flex';
-        document.getElementById('modal-container').innerHTML = `<h3 style="font-weight:900; margin-bottom:20px;">Nueva Prenda</h3><input type="text" id="p-n" placeholder="Nombre"><input type="number" id="p-v" placeholder="Precio de Venta"><input type="number" id="p-s" placeholder="Stock"><button onclick="saveProd()" style="width:100%; background:var(--blue); color:white; border:none; padding:15px; border-radius:15px; font-weight:900;">GUARDAR</button>`;
+
+    function saveAllConf() {
+        const conf = DB.get('config');
+        conf.store = document.getElementById('c-store').value;
+        conf.nit = document.getElementById('c-nit').value;
+        conf.tel = document.getElementById('c-tel').value;
+        conf.address = document.getElementById('c-addr').value;
+        conf.taxOn = document.getElementById('c-tax-on').checked;
+        conf.taxRate = parseFloat(document.getElementById('c-tax-rate').value) || 0;
+        DB.save('config', conf);
+        alert("¡Configuración actualizada con éxito!");
+        nav('conf');
     }
-    function saveProd() {
-        const n = document.getElementById('p-n').value; const v = parseFloat(document.getElementById('p-v').value); const s = parseInt(document.getElementById('p-s').value);
-        if(!n || isNaN(v)) return; const prods = DB.get('prods'); prods.push({ id: Date.now(), n, v, s }); DB.save('prods', prods); document.getElementById('modal-bg').style.display = 'none'; nav('inv');
-    }
+
+    // Funciones básicas de soporte
+    function renderInv(c,t) { t.innerText="Stock"; c.innerHTML=`<div style="background:white; border-radius:25px; border:1px solid #e2e8f0; overflow:hidden;">${DB.get('prods').map(p=>`<div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between;"><div><p style="font-weight:800;">${p.n}</p><p style="font-size:9px; color:var(--gray);">Stock: ${p.s}</p></div><p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p></div>`).join('')}</div>`; }
+    function renderTkts(c,t) { t.innerText="Historial"; c.innerHTML=DB.get('tkts').map(tk=>`<div style="background:white; padding:15px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:10px; display:flex; justify-content:space-between;"><div><p style="font-weight:800;">TKT-${tk.id.toString().slice(-4)}</p><p style="font-size:9px; color:var(--gray);">${tk.f}</p></div><p style="font-weight:900;">${fmt(tk.t)}</p></div>`).join(''); }
 
     window.onload = () => nav('pos');
 </script>
