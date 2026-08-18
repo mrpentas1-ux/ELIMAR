@@ -3,196 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ELIMAR POS - Full Experience</title>
+    <title>ELIMAR POS - Sistema Integral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        :root { --blue: #1e6fff; --dark: #0a0f1d; --bg: #f5f7fa; --border: #eef1f6; }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #333; height: 100vh; overflow: hidden; display: flex; }
-
-        /* --- SIDEBAR (IMAGEN 1) --- */
-        #sidebar { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; transition: 0.3s; }
-        .sidebar-content { width: 280px; height: 100%; background: #0f172a; color: white; padding: 25px 0; display: flex; flex-direction: column; }
-        .side-header { padding: 0 25px 25px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: start; }
-        .user-section { padding: 20px 25px; display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 40px; height: 40px; background: #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-        .status-pill { background: #065f46; color: #34d399; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; }
-        
-        .side-menu { flex: 1; padding: 15px 10px; }
-        .side-item { width: 100%; display: flex; align-items: center; gap: 15px; padding: 14px 15px; color: #94a3b8; font-size: 14px; font-weight: 600; border: none; background: none; cursor: pointer; border-radius: 12px; margin-bottom: 5px; }
-        .side-item.active { background: #1e293b; color: white; border-left: 4px solid var(--blue); }
-
-        /* --- HEADER (IMAGEN 2) --- */
-        .app-container { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { height: 65px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; shrink-0; }
-        .header-icons { display: flex; align-items: center; gap: 8px; }
-        .icon-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 8px; border-radius: 10px; color: #64748b; cursor: pointer; }
-
-        /* --- POS CONTENT --- */
-        main { flex: 1; padding: 15px; overflow-y: auto; padding-bottom: 100px; }
-        .search-area { display: flex; gap: 10px; margin-bottom: 15px; }
-        .search-input { flex: 1; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 40px; font-weight: 600; outline: none; }
-        
-        .cat-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
-        .cat-btn { padding: 8px 18px; border-radius: 20px; background: white; border: 1px solid var(--border); font-size: 11px; font-weight: 800; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .cat-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
-
-        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .prod-card { background: white; border-radius: 20px; padding: 15px; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        .in-cart-badge { position: absolute; top: 15px; right: 15px; background: var(--blue); color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; }
-        .stock-tag { background: #f0fdf4; color: #16a34a; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 5px; }
-
-        /* --- BARRA AZUL "VER TICKET" (IMAGEN 2) --- */
-        .ticket-bar { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--blue); color: white; border-radius: 18px; padding: 15px 20px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(30,111,255,0.4); z-index: 500; cursor: pointer; }
-        .count-circle { width: 30px; height: 30px; background: white; color: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
-
-        @media (min-width: 1024px) { 
-            #sidebar { position: relative; display: block; background: none; }
-            .sidebar-content { box-shadow: 10px 0 30px rgba(0,0,0,0.05); }
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
+        .sidebar-active { background: #1e293b; color: white; border-left: 4px solid #2563eb; }
+        ::-webkit-scrollbar { display: none; }
+        .modal-blur { backdrop-filter: blur(8px); background: rgba(0,0,0,0.4); }
+        .calc-btn { background: #f1f5f9; padding: 15px; border-radius: 12px; font-weight: 800; font-size: 18px; transition: 0.1s; }
+        .calc-btn:active { background: #e2e8f0; transform: scale(0.95); }
     </style>
 </head>
-<body>
+<body class="h-screen flex overflow-hidden">
 
     <!-- SIDEBAR -->
-    <div id="sidebar" onclick="toggleSidebar(false)">
-        <div class="sidebar-content" onclick="event.stopPropagation()">
-            <div class="side-header">
-                <div>
-                    <h2 style="font-weight:900; font-size:18px;">ELIMAR</h2>
-                    <h2 style="font-weight:900; font-size:18px; line-height:0.8;">INVENTARIOS</h2>
-                    <p style="font-size:9px; color:#64748b; font-weight:700; margin-top:5px;">Sistema Punto de Venta</p>
-                </div>
-                <button onclick="toggleSidebar(false)" style="background:none; border:none; color:#64748b;"><i data-lucide="x"></i></button>
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0f172a] text-white transform -translate-x-full transition-transform duration-300 lg:relative lg:translate-x-0 flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+            <div>
+                <h1 class="font-black text-xl leading-none uppercase tracking-tighter">ELIMAR</h1>
+                <h1 class="font-black text-xl leading-tight uppercase tracking-tighter">INVENTARIOS</h1>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mt-1">Sistema Punto de Venta</p>
             </div>
-            
-            <div class="user-section">
-                <div class="user-avatar">B</div>
-                <div>
-                    <p style="font-weight:800; font-size:13px;">BLOOD</p>
-                    <p style="font-size:10px; color:#64748b; font-weight:600; margin-bottom:4px;">Administrador</p>
-                    <div class="status-pill"><span style="width:5px; height:5px; background:#34d399; border-radius:50%;"></span> En línea</div>
-                </div>
-            </div>
-
-            <nav class="side-menu">
-                <button class="side-item active" onclick="nav('pos')"><i data-lucide="shopping-cart" size="18"></i> Punto de Venta</button>
-                <button class="side-item" onclick="nav('inv')"><i data-lucide="box" size="18"></i> Inventario & Prendas</button>
-                <button class="side-item"><i data-lucide="ticket" size="18"></i> Historial Tickets</button>
-                <button class="side-item"><i data-lucide="users" size="18"></i> Clientes & Puntos</button>
-                <button class="side-item"><i data-lucide="bar-chart-3" size="18"></i> Informes & Ventas</button>
-                <button class="side-item" style="margin-top:auto;"><i data-lucide="settings" size="18"></i> Configuración</button>
-            </nav>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-500"><i data-lucide="x"></i></button>
         </div>
-    </div>
 
-    <div class="app-container">
-        <header>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button onclick="toggleSidebar(true)" style="background:none; border:none;"><i data-lucide="menu"></i></button>
-                <h1 id="top-title" style="font-weight:900; font-size:16px;">POS</h1>
+        <div class="p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center font-black text-lg border-2 border-slate-600 shadow-xl">B</div>
+            <div>
+                <p class="font-bold text-sm">BLOOD</p>
+                <p class="text-[10px] text-slate-500 font-semibold uppercase">Administrador</p>
+                <div class="mt-1 inline-flex items-center gap-1.5 bg-[#064e3b] px-2 py-0.5 rounded-full text-[#34d399] text-[9px] font-bold uppercase">
+                    <span class="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse"></span> En línea
+                </div>
             </div>
-            <div class="header-icons">
-                <div style="background:#f1f5f9; padding:5px 12px; border-radius:20px; font-size:10px; font-weight:900; color:#64748b; border:1px solid #eef1f6;">COP ($) <i data-lucide="chevron-down" size="12" style="display:inline; vertical-align:middle;"></i></div>
-                <div class="icon-btn"><i data-lucide="cloud" size="16"></i></div>
-                <div class="icon-btn"><i data-lucide="maximize" size="16"></i></div>
-                <div style="width:32px; height:32px; border-radius:50%; background:#ddd; overflow:hidden; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.1); ml-2">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky" style="width:100%">
+        </div>
+
+        <nav class="flex-1 px-3 space-y-1 overflow-y-auto mt-2">
+            <button onclick="nav('pos')" id="btn-pos" class="sidebar-active w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="shopping-cart" size="18"></i> Punto de Venta
+            </button>
+            <button onclick="nav('inv')" id="btn-inv" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="package" size="18"></i> Inventario & Prendas
+            </button>
+            <button onclick="nav('tkts')" id="btn-tkts" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="ticket" size="18"></i> Historial Tickets
+            </button>
+            <button onclick="nav('clts')" id="btn-clts" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="users" size="18"></i> Clientes & Puntos
+            </button>
+            <button onclick="nav('reps')" id="btn-reps" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="bar-chart-3" size="18"></i> Informes & Ventas
+            </button>
+            <button onclick="nav('conf')" id="btn-conf" class="w-full flex items-center gap-4 px-4 py-3.5 text-slate-400 hover:text-white rounded-xl text-sm font-semibold transition-all mt-auto">
+                <i data-lucide="settings" size="18"></i> Configuración
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0 relative h-full">
+        <!-- HEADER -->
+        <header class="h-16 bg-white border-b px-4 lg:px-8 flex items-center justify-between shrink-0 sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-600 active:scale-90 transition"><i data-lucide="menu"></i></button>
+                <h2 id="top-title" class="font-extrabold text-slate-800 text-lg uppercase tracking-tight">Punto de Venta</h2>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="nav('conf')" class="bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-2xl text-[10px] font-black text-slate-600 flex items-center gap-1 active:scale-95 transition" id="display-currency">COP ($) <i data-lucide="chevron-down" size="12"></i></button>
+                <div class="hidden sm:flex items-center gap-2">
+                    <button class="p-2 bg-slate-50 border rounded-xl text-slate-400 active:scale-95 transition"><i data-lucide="cloud" size="16"></i></button>
+                    <button onclick="alert('Escáner activado')" class="p-2 bg-slate-50 border rounded-xl text-slate-400 active:scale-95 transition"><i data-lucide="scan" size="16"></i></button>
+                </div>
+                <div class="w-9 h-9 bg-slate-100 border-2 border-white rounded-2xl flex items-center justify-center shadow-sm overflow-hidden ml-2 cursor-pointer" onclick="nav('conf')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky" alt="avatar">
                 </div>
             </div>
         </header>
 
-        <main id="app-content"></main>
+        <div id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-8 pb-32">
+            <!-- Dinámico -->
+        </div>
 
-        <!-- BARRA AZUL (IMAGEN 2) -->
-        <div id="ticket-bar" class="ticket-bar" onclick="alert('Abriendo Ticket...')">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <div class="count-circle" id="cart-count">0</div>
-                <span style="font-weight:800; font-size:14px;">Ver Ticket</span>
+        <!-- BARRA FLOTANTE "VER TICKET" -->
+        <div id="ticket-bar" onclick="openCartModal()" class="hidden fixed bottom-6 left-4 right-4 lg:left-auto lg:right-8 lg:w-96 bg-[#2563eb] text-white p-5 rounded-[1.8rem] shadow-2xl flex items-center justify-between z-[60] cursor-pointer transition-all active:scale-95">
+            <div class="flex items-center gap-3">
+                <div id="badge-count" class="w-8 h-8 bg-white text-blue-600 rounded-full flex items-center justify-center font-black text-sm">0</div>
+                <span class="font-black text-xs uppercase tracking-widest">Ver Ticket</span>
             </div>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-weight:900; font-size:18px;" id="cart-total">$ 0</span>
-                <i data-lucide="chevron-up"></i>
+            <div class="flex items-center gap-2">
+                <span id="badge-total" class="font-black text-xl">$ 0</span>
+                <i data-lucide="chevron-up" size="20" class="opacity-50"></i>
             </div>
         </div>
+    </main>
+
+    <!-- MODAL GLOBAL -->
+    <div id="modal-bg" class="hidden fixed inset-0 modal-blur z-[100] flex items-center justify-center p-4">
+        <div id="modal-container" class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col"></div>
     </div>
 
 <script>
-    // DATOS
-    const store = {
-        prods: [{id:1, n:"Pijama larga - M", p:35000, s:10, cat:"PIJAMA"}],
-        cart: []
+    // --- INICIALIZACIÓN DE DATOS ---
+    const DB = {
+        save: (k,v) => localStorage.setItem('pos_v3_'+k, JSON.stringify(v)),
+        get: (k,d) => JSON.parse(localStorage.getItem('pos_v3_'+k)) || d,
+        init() {
+            if(!localStorage.getItem('pos_v3_conf')) this.save('conf', { store:"ELIMAR INVENTARIOS", tax:19, curr:{c:'COP', s:'$'} });
+            if(!localStorage.getItem('pos_v3_prods')) this.save('prods', []);
+            if(!localStorage.getItem('pos_v3_cats')) this.save('cats', [{id:1, n:'General', c:'#3b82f6'}]);
+            if(!localStorage.getItem('pos_v3_tkts')) this.save('tkts', []);
+            if(!localStorage.getItem('pos_v3_clts')) this.save('clts', []);
+        }
     };
+    DB.init();
 
-    function toggleSidebar(open) {
-        document.getElementById('sidebar').style.display = open ? 'block' : 'none';
-    }
+    let state = { view:'pos', cart:[], currency: DB.get('conf').curr, filterCat:0 };
+    const fmt = (n) => `${state.currency.s} ${Math.round(n).toLocaleString()}`;
 
+    // --- NAVEGACIÓN ---
     function nav(v) {
-        const c = document.getElementById('app-content');
+        state.view = v;
+        const c = document.getElementById('main-content');
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('sidebar-active', 'text-white'));
+        document.getElementById('btn-'+v).classList.add('sidebar-active');
+        document.getElementById('display-currency').innerHTML = `${state.currency.c} (${state.currency.s}) <i data-lucide="chevron-down" size="12"></i>`;
+
         if(v==='pos') renderPOS(c);
         if(v==='inv') renderInv(c);
+        if(v==='tkts') renderTkts(c);
+        if(v==='clts') renderClts(c);
+        if(v==='reps') renderReps(c);
+        if(v==='conf') renderConf(c);
+        
         toggleSidebar(false);
         lucide.createIcons();
     }
 
+    // --- POS ---
     function renderPOS(c) {
+        const prods = DB.get('prods');
+        const cats = DB.get('cats');
         c.innerHTML = `
-            <div class="search-area">
-                <i data-lucide="search" size="18" style="position:absolute; left:30px; margin-top:12px; color:#94a3b8;"></i>
-                <input type="text" class="search-input" placeholder="Buscar prenda por nombre o SKU...">
-                <div class="icon-btn" style="background:white;"><i data-lucide="star" style="color:#f59e0b"></i></div>
-                <div class="icon-btn" style="background:white;"><i data-lucide="plus"></i></div>
+            <div class="relative mb-6">
+                <i data-lucide="search" class="absolute left-4 top-4 text-slate-300" size="18"></i>
+                <input type="text" placeholder="Buscar prenda..." class="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl shadow-sm outline-none focus:border-blue-500 font-bold text-sm">
             </div>
-            <div class="cat-row">
-                <button class="cat-btn active">Todo el Catálogo (1)</button>
-                <button class="cat-btn">Camisetas & Polos (0)</button>
+            <div class="flex gap-2 overflow-x-auto pb-4 mb-6">
+                <button onclick="state.filterCat=0;nav('pos')" class="px-5 py-2.5 rounded-full font-bold text-[11px] whitespace-nowrap ${state.filterCat==0?'bg-blue-600 text-white shadow-lg shadow-blue-200':'bg-white border text-slate-500'}">Todo el Catálogo (${prods.length})</button>
+                ${cats.map(cat => `<button onclick="state.filterCat=${cat.id};nav('pos')" class="bg-white border text-slate-500 px-5 py-2.5 rounded-full font-bold text-[11px] whitespace-nowrap ${state.filterCat==cat.id?'border-blue-600 text-blue-600':''}">${cat.n}</button>`).join('')}
             </div>
-            <div class="prod-grid">
-                <div class="prod-card" style="border:2px dashed #cbd5e1; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#94a3b8;">
-                    <i data-lucide="plus" size="32" style="color:var(--blue)"></i>
-                    <p style="font-weight:800; font-size:11px; margin-top:8px;">Venta Manual / Libre</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div onclick="vManual()" class="bg-white border-2 border-dashed border-slate-200 rounded-[2.2rem] p-6 flex flex-col items-center justify-center text-slate-300 cursor-pointer active:scale-95 transition">
+                    <i data-lucide="plus-circle" size="32" class="text-blue-500 opacity-50"></i>
+                    <p class="font-bold text-[10px] mt-2 uppercase tracking-widest">Venta Manual</p>
                 </div>
-                ${store.prods.map(p => {
-                    const count = store.cart.filter(x => x.id === p.id).length;
-                    return `
-                    <div class="prod-card" onclick="addToCart(${p.id})">
-                        ${count > 0 ? `<div class="in-cart-badge">${count} en carrito</div>` : ''}
-                        <div style="background:#e0f2fe; border-radius:15px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
-                            <i data-lucide="shirt" style="color:var(--blue)" size="32"></i>
-                        </div>
-                        <p style="font-size:9px; font-weight:800; color:#94a3b8; text-transform:uppercase;">${p.cat}</p>
-                        <p style="font-weight:700; font-size:12px; margin:2px 0;">${p.n}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                            <span style="font-weight:900; color:var(--blue);">$ ${p.p.toLocaleString()}</span>
-                            <span class="stock-tag">Stock: ${p.s} uds</span>
-                        </div>
-                    </div>`;
-                }).join('')}
+                ${prods.filter(p => state.filterCat==0 || p.catId==state.filterCat).map(p => {
+                    const inCart = state.cart.filter(x=>x.id==p.id).length;
+                    return `<div onclick="addCart(${p.id})" class="pos-card bg-white p-4 rounded-[2.2rem] border border-slate-50 shadow-sm relative cursor-pointer active:scale-95 transition">
+                        ${inCart > 0 ? `<div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-0.5 rounded-full text-[9px] font-black">${inCart} en carrito</div>` : ''}
+                        <div class="aspect-square rounded-2xl flex items-center justify-center mb-4" style="background:${p.col}15; color:${p.col}"><i data-lucide="shirt" size="36"></i></div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">${p.cat}</p>
+                        <h3 class="font-bold text-xs text-slate-800 truncate mb-2">${p.n}</h3>
+                        <div class="flex justify-between items-center"><span class="text-blue-600 font-black text-sm">${fmt(p.v)}</span><span class="text-[9px] font-bold text-green-500 bg-green-50 px-2 py-0.5 rounded">Stock: ${p.s}</span></div>
+                    </div>`}).join('')}
+            </div>`;
+        updateBadge();
+    }
+
+    // --- COBRO Y CALCULADORA (Billetes Sugeridos) ---
+    function openCheckout(total) {
+        let recibido = total;
+        const updateCalc = () => {
+            const cambio = recibido - total;
+            document.getElementById('recibido-val').innerText = fmt(recibido);
+            document.getElementById('cambio-val').innerText = fmt(cambio >= 0 ? cambio : 0);
+            document.getElementById('btn-finish').disabled = recibido < total;
+        };
+
+        showModal(`
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6"><h3 class="font-black text-xl uppercase tracking-tighter">Proceso de Cobro</h3><button onclick="closeModal()"><i data-lucide="x"></i></button></div>
+                <div class="bg-slate-50 p-6 rounded-3xl text-center mb-8 border border-slate-100">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total a Pagar</p>
+                    <p class="text-4xl font-black text-slate-900">${fmt(total)}</p>
+                </div>
+                <div class="grid grid-cols-4 gap-2 mb-8">
+                    <button onclick="setRecibido(${total})" class="calc-btn text-blue-600 bg-blue-50 border border-blue-100 text-xs">Exacto</button>
+                    ${[10000, 20000, 50000].map(b => `<button onclick="setRecibido(${b})" class="calc-btn text-xs font-bold">$${b/1000}k</button>`).join('')}
+                </div>
+                <div class="space-y-4 px-2">
+                    <div class="flex justify-between font-bold text-slate-400 text-sm"><span>Recibido</span><span id="recibido-val" class="text-slate-800 font-black">${fmt(total)}</span></div>
+                    <div class="flex justify-between font-bold text-slate-400 text-sm border-t pt-4"><span>Cambio / Vuelto</span><span id="cambio-val" class="text-green-600 font-black">$ 0</span></div>
+                </div>
+                <button id="btn-finish" onclick="saveTkt(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.8rem] font-black mt-10 shadow-xl shadow-blue-200">FINALIZAR COBRO</button>
             </div>
-        `;
+        `);
+        window.setRecibido = (v) => { recibido = v; updateCalc(); };
+        updateCalc();
     }
 
-    function addToCart(id) {
-        const p = store.prods.find(x => x.id === id);
-        store.cart.push(p);
-        updateCartUI();
-        renderPOS(document.getElementById('app-content'));
-        lucide.createIcons();
+    // --- OTROS MÓDULOS ---
+    function renderInv(c) {
+        c.innerHTML = `
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="font-black text-2xl tracking-tighter">Inventario</h2>
+                <div class="flex gap-2">
+                    <button onclick="modalNewCat()" class="bg-orange-100 text-orange-600 p-3 rounded-2xl active:scale-90 transition"><i data-lucide="tag"></i></button>
+                    <button onclick="modalNewProd()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-sm shadow-lg shadow-blue-200 flex items-center gap-2 active:scale-95 transition"><i data-lucide="plus" size="18"></i> Nueva Prenda</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-[2.5rem] border shadow-sm divide-y overflow-hidden">
+                ${DB.get('prods').map(p => `<div class="p-6 flex items-center justify-between hover:bg-slate-50 transition cursor-pointer" onclick="adjStock(${p.id})">
+                    <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-white" style="background:${p.col}">${p.n[0]}</div>
+                    <div><p class="font-black text-slate-800">${p.n}</p><p class="text-[9px] font-black text-slate-400 uppercase">${p.cat} | SKU: ${p.sku}</p></div></div>
+                    <div class="text-right"><p class="font-black text-blue-600">${fmt(p.v)}</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Stock: ${p.s} Uds</p></div>
+                </div>`).join('')}
+            </div>`;
     }
 
-    function updateCartUI() {
-        const bar = document.getElementById('ticket-bar');
-        const count = document.getElementById('cart-count');
-        const total = document.getElementById('cart-total');
-        
-        if(store.cart.length > 0) {
-            bar.style.display = 'flex';
-            count.innerText = store.cart.length;
-            total.innerText = '$ ' + store.cart.reduce((s,i)=>s+i.p,0).toLocaleString();
-        } else bar.style.display = 'none';
+    // Funciones Helper
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
+    function showModal(h) { document.getElementById('modal-container').innerHTML = h; document.getElementById('modal-bg').classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal() { document.getElementById('modal-bg').classList.add('hidden'); }
+    function addCart(id) { 
+        const p = DB.get('prods').find(x=>x.id==id); 
+        if(p.s <= 0) return alert("¡Sin stock!"); 
+        state.cart.push({...p}); updateBadge(); nav('pos'); 
     }
+    function updateBadge() {
+        const b = document.getElementById('ticket-bar');
+        const total = state.cart.reduce((s,i)=>s+i.v,0);
+        if(state.cart.length > 0) {
+            b.classList.remove('hidden');
+            document.getElementById('badge-count').innerText = state.cart.length;
+            document.getElementById('badge-total').innerText = fmt(total);
+        } else b.classList.add('hidden');
+    }
+    function openCartModal() {
+        const total = state.cart.reduce((s,i)=>s+i.v,0);
+        showModal(`
+            <div class="p-8">
+                <h3 class="font-black text-xl mb-6">Mi Ticket</h3>
+                <div class="space-y-3 mb-10 max-h-60 overflow-y-auto">
+                    ${state.cart.map((i,idx)=>`<div class="flex justify-between font-bold text-sm"><span>${i.n}</span><div class="flex items-center gap-3"><span>${fmt(i.v)}</span><button onclick="cartRem(${idx})" class="text-red-400"><i data-lucide="trash-2" size="14"></i></button></div></div>`).join('')}
+                </div>
+                <div class="flex justify-between text-2xl font-black border-t pt-6"><span>Total</span><span class="text-blue-600">${fmt(total)}</span></div>
+                <button onclick="openCheckout(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.8rem] font-black mt-8 shadow-xl">PROCEDER AL COBRO</button>
+            </div>
+        `);
+    }
+    function cartRem(idx) { state.cart.splice(idx,1); updateBadge(); openCartModal(); }
+    function saveTkt(total) {
+        const tkts = DB.get('tkts'); tkts.unshift({ id:Date.now(), f:new Date().toLocaleString(), t:total }); DB.save('tkts', tkts);
+        const ps = DB.get('prods'); state.cart.forEach(c => { const pi = ps.findIndex(x=>x.id==c.id); if(pi!=-1) ps[pi].s-=1; }); DB.save('prods', ps);
+        state.cart = []; closeModal(); alert("¡Venta completada!"); nav('tkts');
+    }
+
+    // Modales de Inventario (Nombres exactos del video)
+    function modalNewProd() {
+        showModal(`
+            <div class="p-8">
+                <h3 class="font-black text-xl mb-8">Nueva Prenda de Vestir</h3>
+                <div class="space-y-4">
+                    <input type="text" id="n-n" placeholder="Nombre de la prenda" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="n-v" placeholder="Precio Venta" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" oninput="mCalc()">
+                        <input type="number" id="n-c" placeholder="Precio Costo" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" oninput="mCalc()">
+                    </div>
+                    <p id="m-label" class="text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-50 p-2 rounded-lg text-center">Margen estimado: 0%</p>
+                    <input type="number" id="n-s" placeholder="Stock Inicial" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold">
+                    <button onclick="saveP()" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black shadow-xl mt-4">REGISTRAR</button>
+                </div>
+            </div>
+        `);
+        window.mCalc = () => {
+            const v = parseFloat(document.getElementById('n-v').value)||0, c = parseFloat(document.getElementById('n-c').value)||0;
+            const m = v > 0 ? ((v-c)/v)*100 : 0;
+            document.getElementById('m-label').innerText = `Margen estimado: ${m.toFixed(1)}%`;
+        };
+    }
+    function saveP() {
+        const n = document.getElementById('n-n').value; const v = parseFloat(document.getElementById('n-v').value);
+        if(!n || isNaN(v)) return alert("Datos incompletos");
+        const ps = DB.get('prods'); ps.push({ id:Date.now(), n, v, c:parseFloat(document.getElementById('n-c').value)||0, s:parseInt(document.getElementById('n-s').value)||0, cat:"GENERAL", sku:"CLO-"+Math.floor(Math.random()*900), col:"#3b82f6" });
+        DB.save('prods', ps); closeModal(); nav('inv');
+    }
+
+    // Resto de vistas simplificadas para rapidez
+    function renderTkts(c) { c.innerHTML = DB.get('tkts').map(t=>`<div class="bg-white p-5 rounded-3xl border mb-3 flex justify-between"><div><p class="font-black text-sm">Venta #${t.id.toString().slice(-4)}</p><p class="text-[10px] text-slate-400 font-bold">${t.f}</p></div><p class="font-black text-blue-600">${fmt(t.t)}</p></div>`).join(''); }
+    function renderClts(c) { c.innerHTML = `<div class="bg-white p-10 rounded-3xl text-center text-slate-300 font-bold italic">Clientes guardados: ${DB.get('clts').length}</div>`; }
+    function renderReps(c) { c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-white p-10 rounded-[2.5rem] border text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-2">Ventas Brutas</p><p class="text-4xl font-black text-slate-900">${fmt(DB.get('tkts').reduce((s,t)=>s+t.t,0))}</p></div></div>`; }
+    function renderConf(c) { c.innerHTML = `<div class="bg-white p-8 rounded-[2.5rem] border shadow-sm text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-8 tracking-widest tracking-widest">Ajustes de Sistema</p><button onclick="localStorage.clear(); location.reload();" class="text-red-500 font-black text-[10px] uppercase underline underline-offset-8">Restablecer todo el sistema</button></div>`; }
 
     window.onload = () => nav('pos');
 </script>
