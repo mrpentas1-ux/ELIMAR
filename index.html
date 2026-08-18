@@ -3,151 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar POS - Multimoneda Pro</title>
+    <title>Elimar Premium POS</title>
+    <!-- Configuración App -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .active-currency { border: 2px solid #2563eb; background-color: #eff6ff; }
-        .sidebar-item-active { color: #2563eb; background: #f1f5f9; border-left: 4px solid #2563eb; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --loyverse-dark: #0f172a;
+            --loyverse-blue: #2563eb;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-active {
+            color: var(--loyverse-blue);
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 12px;
+        }
+
+        .currency-card-active {
+            border: 2px solid var(--loyverse-blue);
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        /* Ocultar scrollbar */
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-slate-50 h-screen flex flex-col overflow-hidden text-slate-800">
+<body class="h-screen flex flex-col lg:flex-row overflow-hidden">
 
-    <!-- HEADER ESTILO PROFESIONAL -->
-    <header class="h-16 bg-white border-b px-4 flex items-center justify-between shrink-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center text-white font-black">E</div>
+    <!-- SIDEBAR (PC & TABLET) -->
+    <aside class="hidden lg:flex w-72 bg-[#0f172a] text-white flex-col p-6 shrink-0 shadow-2xl">
+        <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-800">
+            <div class="bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg shadow-blue-500/20">M</div>
             <div>
-                <h1 id="page-title" class="font-black text-sm uppercase tracking-tight">Ventas</h1>
-                <p class="text-[9px] text-slate-400 font-bold uppercase">Mi Tienda - Elimar</p>
+                <h2 class="font-bold text-sm leading-tight">Elimar POS</h2>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Sistema de Gestión</p>
             </div>
         </div>
-        <div class="flex items-center gap-2">
-            <div class="bg-slate-100 px-3 py-1 rounded-full text-[10px] font-bold text-slate-600" id="header-currency-code">COP ($)</div>
-            <div class="text-right border-l pl-3 ml-2">
-                <p class="text-[10px] font-black text-slate-500 uppercase leading-none">Eliana Muñoz</p>
-                <span class="text-[9px] text-green-500 font-bold uppercase tracking-tighter italic">● Conectado</span>
+        
+        <nav class="flex-1 space-y-2">
+            <button onclick="nav('ventas')" id="d-ventas" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-white transition-all rounded-xl">
+                <i data-lucide="shopping-bag" size="20"></i> <span class="font-semibold text-sm">Ventas</span>
+            </button>
+            <button onclick="nav('inventario')" id="d-inventario" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-white transition-all rounded-xl">
+                <i data-lucide="package" size="20"></i> <span class="font-semibold text-sm">Inventario</span>
+            </button>
+            <button onclick="nav('tickets')" id="d-tickets" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-white transition-all rounded-xl">
+                <i data-lucide="ticket" size="20"></i> <span class="font-semibold text-sm">Tickets</span>
+            </button>
+            <button onclick="nav('informes')" id="d-informes" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-white transition-all rounded-xl">
+                <i data-lucide="bar-chart-3" size="20"></i> <span class="font-semibold text-sm">Informes</span>
+            </button>
+            <button onclick="nav('ajustes')" id="d-ajustes" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-white transition-all rounded-xl mt-auto">
+                <i data-lucide="settings" size="20"></i> <span class="font-semibold text-sm">Ajustes</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO -->
+    <div class="flex-1 flex flex-col min-w-0 h-full">
+        <!-- HEADER -->
+        <header class="h-16 lg:h-20 bg-white border-b px-6 flex items-center justify-between glass sticky top-0 z-40">
+            <h2 id="view-title" class="text-lg lg:text-xl font-extrabold text-slate-800 tracking-tight">Punto de Venta</h2>
+            
+            <div class="flex items-center gap-4">
+                <div class="bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-600 border border-slate-200" id="header-currency">COP ($)</div>
+                <div class="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-tighter leading-none mb-1">Eliana Muñoz</p>
+                    <div class="flex items-center justify-end gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-[9px] font-bold text-green-600 uppercase tracking-widest">En Línea</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
+                    <i data-lucide="user" size="18"></i>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- CONTENIDO -->
-    <main id="main-view" class="flex-1 overflow-y-auto p-4 pb-32">
-        <!-- Contenido via JS -->
-    </main>
+        <!-- VISTAS DINÁMICAS -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-8 pb-32 lg:pb-8">
+            <!-- Se carga via JS -->
+        </main>
+    </div>
 
-    <!-- MENU INFERIOR LOYVERSE -->
-    <nav class="fixed bottom-0 w-full bg-[#0f172a] text-slate-400 flex justify-around p-2 border-t border-slate-800 z-50 shadow-2xl">
-        <button onclick="changeView('ventas')" id="nav-ventas" class="flex flex-col items-center p-2"><i data-lucide="shopping-cart" size="18"></i><span class="text-[9px] mt-1 font-bold uppercase">Ventas</span></button>
-        <button onclick="changeView('inventario')" id="nav-inventario" class="flex flex-col items-center p-2"><i data-lucide="package" size="18"></i><span class="text-[9px] mt-1 font-bold uppercase">Inventario</span></button>
-        <button onclick="changeView('tickets')" id="nav-tickets" class="flex flex-col items-center p-2"><i data-lucide="ticket" size="18"></i><span class="text-[9px] mt-1 font-bold uppercase">Tickets</span></button>
-        <button onclick="changeView('informes')" id="nav-informes" class="flex flex-col items-center p-2"><i data-lucide="bar-chart-3" size="18"></i><span class="text-[9px] mt-1 font-bold uppercase">Informes</span></button>
-        <button onclick="changeView('ajustes')" id="nav-ajustes" class="flex flex-col items-center p-2"><i data-lucide="settings" size="18"></i><span class="text-[9px] mt-1 font-bold uppercase">Ajustes</span></button>
+    <!-- MENÚ INFERIOR (SOLO MÓVIL) -->
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 flex justify-around p-3 pb-6 z-50">
+        <button onclick="nav('ventas')" id="m-ventas" class="flex flex-col items-center gap-1 transition-all">
+            <i data-lucide="shopping-bag" size="20"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Ventas</span>
+        </button>
+        <button onclick="nav('inventario')" id="m-inventario" class="flex flex-col items-center gap-1 transition-all text-slate-400">
+            <i data-lucide="package" size="20"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Stock</span>
+        </button>
+        <button onclick="nav('tickets')" id="m-tickets" class="flex flex-col items-center gap-1 transition-all text-slate-400">
+            <i data-lucide="ticket" size="20"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Tickets</span>
+        </button>
+        <button onclick="nav('informes')" id="m-informes" class="flex flex-col items-center gap-1 transition-all text-slate-400">
+            <i data-lucide="bar-chart-3" size="20"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Informe</span>
+        </button>
+        <button onclick="nav('ajustes')" id="m-ajustes" class="flex flex-col items-center gap-1 transition-all text-slate-400">
+            <i data-lucide="settings" size="20"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Ajustes</span>
+        </button>
     </nav>
 
 <script>
-    // --- DATOS Y MONEDAS ---
+    // --- LÓGICA DE NEGOCIO ---
     const currencies = [
-        { code: 'COP', symbol: '$', name: 'Peso Colombiano' },
-        { code: 'USD', symbol: '$', name: 'Dólar Estadounidense' },
-        { code: 'EUR', symbol: '€', name: 'Euro (€)' },
-        { code: 'MXN', symbol: '$', name: 'Peso Mexicano' },
-        { code: 'PEN', symbol: 'S/', name: 'Sol Peruano' },
-        { code: 'CLP', symbol: '$', name: 'Peso Chileno' },
-        { code: 'ARS', symbol: '$', name: 'Peso Argentino' }
+        { id: 'COP', s: '$', n: 'Peso Colombiano' },
+        { id: 'USD', s: '$', n: 'Dólar Estadounidense' },
+        { id: 'EUR', s: '€', n: 'Euro (€)' },
+        { id: 'MXN', s: '$', n: 'Peso Mexicano' },
+        { id: 'PEN', s: 'S/', n: 'Sol Peruano' },
+        { id: 'CLP', s: '$', n: 'Peso Chileno' },
+        { id: 'ARS', s: '$', n: 'Peso Argentino' }
     ];
 
-    // Inicializar DB
-    if(!localStorage.getItem('elimar_prods')) {
-        localStorage.setItem('elimar_prods', JSON.stringify([
-            { id: 1, nombre: "Pijamma M", pVenta: 35000, pCosto: 25000, stock: 10, color: "blue" },
-            { id: 2, nombre: "Blazer Estructurado", pVenta: 195000, pCosto: 95000, stock: 20, color: "orange" }
-        ]));
-    }
-    if(!localStorage.getItem('elimar_currency')) localStorage.setItem('elimar_currency', JSON.stringify(currencies[0]));
-    if(!localStorage.getItem('elimar_tickets')) localStorage.setItem('elimar_tickets', '[]');
+    // Cargar datos
+    const load = (key, def) => JSON.parse(localStorage.getItem(key)) || def;
+    const save = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 
-    let carrito = [];
-    const getCurrency = () => JSON.parse(localStorage.getItem('elimar_currency'));
-    const getProds = () => JSON.parse(localStorage.getItem('elimar_prods'));
-    const getTickets = () => JSON.parse(localStorage.getItem('elimar_tickets'));
+    let db = load('elimar_db', [
+        { id: 1, n: "Pijamma M", v: 35000, c: 25000, s: 10, cat: "PIJAMA", col: "blue" },
+        { id: 2, n: "Blazer Estructurado", v: 195000, c: 95000, s: 20, cat: "CHAQUETAS", col: "orange" },
+        { id: 3, n: "Bolso Tote Bag", v: 85000, c: 40000, s: 5, cat: "ACCESORIOS", col: "amber" }
+    ]);
+    
+    let tickets = load('elimar_tkts', []);
+    let currentCurrency = load('elimar_curr', currencies[0]);
+    let cart = [];
 
-    // Formateador de precio según moneda
-    const fP = (num) => {
-        const cur = getCurrency();
-        return `${cur.symbol} ${Math.round(num).toLocaleString()}`;
-    };
+    const format = (num) => `${currentCurrency.s} ${Math.round(num).toLocaleString()}`;
 
-    function changeView(view) {
-        const c = document.getElementById('main-view');
-        const t = document.getElementById('page-title');
-        const cur = getCurrency();
+    function nav(view) {
+        const content = document.getElementById('main-content');
+        const title = document.getElementById('view-title');
+        const hCurr = document.getElementById('header-currency');
         
-        document.getElementById('header-currency-code').innerText = `${cur.code} (${cur.symbol})`;
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('text-blue-500'));
-        document.getElementById('nav-'+view).classList.add('text-blue-500');
+        hCurr.innerText = `${currentCurrency.id} (${currentCurrency.s})`;
 
-        if(view === 'ventas') renderVentas(c, t);
-        if(view === 'inventario') renderInventario(c, t);
-        if(view === 'tickets') renderTickets(c, t);
-        if(view === 'informes') renderInformes(c, t);
-        if(view === 'ajustes') renderAjustes(c, t);
+        // Botones activos
+        document.querySelectorAll('nav button, aside button').forEach(b => {
+            b.classList.remove('nav-active', 'text-blue-600', 'text-white');
+            if(b.tagName === 'BUTTON' && !b.closest('aside')) b.classList.add('text-slate-400');
+        });
+        document.getElementById('m-'+view)?.classList.add('nav-active', 'text-blue-600');
+        document.getElementById('d-'+view)?.classList.add('nav-active', 'text-white');
+
+        if(view === 'ventas') renderVentas(content, title);
+        if(view === 'inventario') renderInventario(content, title);
+        if(view === 'tickets') renderTickets(content, title);
+        if(view === 'informes') renderInformes(content, title);
+        if(view === 'ajustes') renderAjustes(content, title);
+        
         lucide.createIcons();
     }
 
     function renderVentas(c, t) {
         t.innerText = "Punto de Venta";
-        const totalCarrito = carrito.reduce((s, i) => s + i.pVenta, 0);
+        const sub = cart.reduce((a, b) => a + b.v, 0);
+        const iva = sub * 0.19;
+        const total = sub + iva;
+
         c.innerHTML = `
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                ${getProds().map(p => `
-                    <div onclick="addCart(${p.id})" class="bg-white p-3 rounded-3xl border border-slate-100 shadow-sm active:scale-95 transition cursor-pointer">
-                        <div class="aspect-square bg-${p.color}-50 rounded-2xl mb-2 flex items-center justify-center text-3xl font-black text-${p.color}-300">${p.nombre[0]}</div>
-                        <h3 class="font-bold text-[11px] h-8 overflow-hidden">${p.nombre}</h3>
-                        <p class="text-blue-600 font-black text-xs mt-1">${fP(p.pVenta)}</p>
+            <div class="flex flex-col lg:flex-row gap-8 h-full">
+                <div class="flex-1">
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        ${db.map(p => `
+                            <div onclick="addToCart(${p.id})" class="bg-white p-4 rounded-[2rem] border border-slate-100 card-shadow active:scale-95 transition-all cursor-pointer">
+                                <div class="aspect-square bg-${p.col}-50 rounded-3xl mb-4 flex items-center justify-center text-4xl font-black text-${p.col}-200">${p.n[0]}</div>
+                                <h3 class="font-bold text-xs text-slate-700 h-8 line-clamp-2">${p.n}</h3>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-blue-600 font-extrabold text-sm">${format(p.v)}</span>
+                                    <span class="text-[8px] bg-slate-100 px-2 py-1 rounded-lg font-bold text-slate-400 uppercase tracking-widest">Stock: ${p.s}</span>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                `).join('')}
-            </div>
-            <div class="bg-white rounded-3xl border shadow-xl p-5 border-t-4 border-t-blue-600">
-                <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Carrito (${carrito.length})</p>
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-xl font-black">TOTAL</span>
-                    <span class="text-xl font-black text-blue-600">${fP(totalCarrito * 1.19)}</span>
                 </div>
-                <button onclick="cobrar()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 active:bg-blue-700" ${carrito.length === 0 ? 'disabled opacity-50' : ''}>COBRAR</button>
+                
+                <!-- CARRITO PROFESIONAL -->
+                <div class="w-full lg:w-96 bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 flex flex-col sticky bottom-4 h-fit self-end lg:self-start lg:top-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Resumen de Venta</span>
+                        <button onclick="cart=[];nav('ventas')" class="text-red-500 font-bold text-[10px] uppercase">Vaciar</button>
+                    </div>
+                    <div class="flex-1 space-y-4 mb-8 overflow-y-auto max-h-48 pr-2">
+                        ${cart.length === 0 ? '<div class="py-10 text-center text-slate-300 italic text-sm">El ticket está vacío</div>' : ''}
+                        ${cart.map((i, idx) => `
+                            <div class="flex justify-between items-center animate-in slide-in-from-right duration-200">
+                                <div class="text-xs font-bold">${i.n}</div>
+                                <div class="text-xs font-black text-slate-400">${format(i.v)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="space-y-2 border-t border-dashed border-slate-200 pt-6">
+                        <div class="flex justify-between text-xs text-slate-400 font-bold uppercase"><span>Subtotal</span><span>${format(sub)}</span></div>
+                        <div class="flex justify-between text-xs text-slate-400 font-bold uppercase"><span>IVA (19%)</span><span>${format(iva)}</span></div>
+                        <div class="flex justify-between text-2xl font-black text-slate-900 pt-2 tracking-tighter"><span>TOTAL</span><span>${format(total)}</span></div>
+                    </div>
+                    <button onclick="cobrar(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-sm mt-6 shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all disabled:opacity-30" ${cart.length === 0 ? 'disabled' : ''}>PAGAR AHORA</button>
+                </div>
             </div>
         `;
     }
 
-    function addCart(id) {
-        const p = getProds().find(x => x.id === id);
-        carrito.push({...p});
-        changeView('ventas');
+    function addToCart(id) {
+        const p = db.find(x => x.id === id);
+        if(p.s > 0) {
+            cart.push({...p});
+            nav('ventas');
+        } else alert("¡Sin existencias!");
     }
 
-    function cobrar() {
-        const total = carrito.reduce((s, i) => s + i.pVenta, 0) * 1.19;
-        const tickets = getTickets();
-        tickets.unshift({ id: Date.now(), fecha: new Date().toLocaleString(), total, items: [...carrito] });
-        localStorage.setItem('elimar_tickets', JSON.stringify(tickets));
-        carrito = [];
-        alert("¡Venta Guardada con éxito!");
-        changeView('ventas');
+    function cobrar(total) {
+        const tkt = { id: tickets.length + 1, f: new Date().toLocaleString(), t: total, i: [...cart], c: {...currentCurrency} };
+        tickets.unshift(tkt);
+        cart.forEach(c => { const p = db.find(x => x.id === c.id); if(p) p.s -= 1; });
+        save('elimar_db', db);
+        save('elimar_tkts', tickets);
+        cart = [];
+        alert("¡Venta finalizada!");
+        nav('tickets');
     }
 
     function renderInventario(c, t) {
         t.innerText = "Control de Inventario";
         c.innerHTML = `
-            <div class="bg-white rounded-3xl border shadow-sm divide-y">
-                ${getProds().map(p => `
-                    <div class="p-4 flex justify-between items-center">
-                        <div><p class="font-black text-sm text-slate-800">${p.nombre}</p><p class="text-[9px] font-bold text-slate-400">STOCK: ${p.stock} uds</p></div>
-                        <p class="font-black text-blue-600 text-sm">${fP(p.pVenta)}</p>
-                    </div>
-                `).join('')}
+            <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Artículos en Stock</span>
+                    <button class="bg-blue-600 text-white px-5 py-2 rounded-2xl text-[10px] font-bold shadow-lg shadow-blue-100">+ Agregar</button>
+                </div>
+                <div class="divide-y divide-slate-100">
+                    ${db.map(p => `
+                        <div class="p-5 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300">${p.n[0]}</div>
+                                <div><p class="font-bold text-sm text-slate-800">${p.n}</p><p class="text-[10px] text-slate-400 font-bold uppercase">${p.cat}</p></div>
+                            </div>
+                            <div class="flex gap-12 text-right">
+                                <div class="hidden sm:block"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1 tracking-tighter">Costo</p><p class="text-sm font-bold text-slate-600">${format(p.c)}</p></div>
+                                <div><p class="text-[9px] font-bold text-slate-400 uppercase mb-1 tracking-tighter">Venta</p><p class="text-sm font-black text-blue-600">${format(p.v)}</p></div>
+                                <div class="border-l border-slate-200 pl-8"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1 tracking-tighter">Stock</p><p class="text-xl font-black text-slate-800">${p.s}</p></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         `;
     }
@@ -155,11 +278,18 @@
     function renderTickets(c, t) {
         t.innerText = "Historial de Tickets";
         c.innerHTML = `
-            <div class="space-y-3">
-                ${getTickets().map(tk => `
-                    <div class="bg-white p-5 rounded-3xl border shadow-sm flex justify-between items-center">
-                        <div><p class="font-black text-sm uppercase">TKT-${tk.id.toString().slice(-4)}</p><p class="text-[10px] text-slate-400 font-bold">${tk.fecha}</p></div>
-                        <p class="text-lg font-black text-slate-800">${fP(tk.total)}</p>
+            <div class="space-y-4">
+                ${tickets.length === 0 ? '<div class="py-20 text-center text-slate-300 font-bold italic">No hay historial de ventas</div>' : ''}
+                ${tickets.map(tk => `
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex justify-between items-center">
+                        <div class="flex items-center gap-5">
+                            <div class="w-12 h-12 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center"><i data-lucide="check-circle-2"></i></div>
+                            <div><p class="font-black text-slate-800 text-sm">Ticket #0000${tk.id}</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${tk.f}</p></div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-black text-slate-900">${tk.c.s} ${Math.round(tk.t).toLocaleString()}</p>
+                            <span class="text-[9px] bg-green-100 text-green-700 px-3 py-1 rounded-full font-black tracking-widest uppercase">COBRADO</span>
+                        </div>
                     </div>
                 `).join('')}
             </div>
@@ -167,68 +297,77 @@
     }
 
     function renderInformes(c, t) {
-        t.innerText = "Ventas & Utilidades";
-        const tickets = getTickets();
-        const totalVendido = tickets.reduce((s, tk) => s + tk.total, 0);
+        t.innerText = "Informes & Ganancias";
+        const total = tickets.reduce((a, b) => a + b.t, 0);
+        let profit = 0;
+        tickets.forEach(tk => { tk.i.forEach(it => { profit += (it.v - it.c); }); });
+
         c.innerHTML = `
-            <div class="space-y-4">
-                <div class="bg-white p-6 rounded-[2rem] border shadow-sm text-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Ventas Brutas</p>
-                    <p class="text-4xl font-black text-slate-900">${fP(totalVendido)}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm text-center">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Ventas Brutas</p>
+                    <p class="text-5xl font-black text-slate-900 tracking-tighter">${format(total)}</p>
+                    <div class="mt-6 flex items-center justify-center gap-2 text-green-500 font-bold text-xs"><i data-lucide="trending-up" size="14"></i> +12% Este mes</div>
                 </div>
-                <div class="bg-blue-600 p-6 rounded-[2rem] text-white text-center shadow-xl shadow-blue-100">
-                    <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Utilidad Estimada</p>
-                    <p class="text-4xl font-black">${fP(totalVendido * 0.5)}</p>
+                <div class="bg-[#2563eb] p-8 rounded-[2.5rem] shadow-2xl shadow-blue-200 text-center text-white">
+                    <p class="text-[10px] font-black opacity-60 uppercase tracking-[0.2em] mb-4">Utilidad Neta (Ganancia)</p>
+                    <p class="text-5xl font-black tracking-tighter">${format(profit)}</p>
+                    <p class="text-[10px] font-bold opacity-60 mt-6 tracking-widest">MARGEN DE GANANCIA: ~${Math.round((profit/total)*100) || 0}%</p>
                 </div>
             </div>
         `;
     }
 
-    // --- SECCIÓN AJUSTES (COPIA DE TU FOTO 1) ---
     function renderAjustes(c, t) {
         t.innerText = "Ajustes de Tienda & Moneda";
-        const activeCur = getCurrency();
-        
         c.innerHTML = `
-            <div class="bg-white rounded-3xl border shadow-sm p-6 mb-6">
-                <h3 class="text-blue-500 font-black text-[10px] uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <i data-lucide="globe" size="14"></i> Moneda & Divisa del TPV
-                </h3>
-                <p class="text-[10px] text-slate-400 font-bold mb-4">Selecciona la moneda principal para mostrar los precios y tickets de compra:</p>
+            <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="globe" size="20"></i></div>
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Moneda & Divisa del TPV</h3>
+                </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <p class="text-[11px] text-slate-500 font-semibold mb-6 px-1">Selecciona la moneda principal para mostrar los precios y tickets de compra:</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     ${currencies.map(cur => `
-                        <div onclick="setCurrency('${cur.code}')" class="p-4 border-2 rounded-2xl text-center cursor-pointer transition-all ${activeCur.code === cur.code ? 'active-currency' : 'border-slate-100 hover:border-slate-200'}">
-                            <p class="text-xl font-black">${cur.code}</p>
-                            <p class="text-[14px] text-blue-600 font-bold">${cur.symbol}</p>
-                            <p class="text-[9px] text-slate-400 font-bold uppercase mt-1 leading-none h-4">${cur.name}</p>
+                        <div onclick="setCurr('${cur.id}')" class="p-5 border-2 rounded-3xl text-center cursor-pointer transition-all duration-300 ${currentCurrency.id === cur.id ? 'currency-card-active' : 'border-slate-100 hover:border-slate-200 bg-slate-50/50'}">
+                            <p class="text-2xl font-black text-slate-900 mb-1">${cur.id}</p>
+                            <p class="text-xl font-bold text-blue-600 leading-none mb-2">${cur.s}</p>
+                            <p class="text-[9px] text-slate-400 font-black uppercase leading-tight h-6 flex items-center justify-center">${cur.n}</p>
                         </div>
                     `).join('')}
                 </div>
 
-                <div class="mt-10 pt-8 border-t space-y-6">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Símbolo de Moneda</p>
-                        <input type="text" value="${activeCur.symbol}" class="w-full bg-slate-50 border p-3 rounded-xl font-black text-slate-700" disabled>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Código ISO</p>
-                        <input type="text" value="${activeCur.code}" class="w-full bg-slate-50 border p-3 rounded-xl font-black text-slate-700" disabled>
+                <div class="mt-12 pt-10 border-t border-slate-100 space-y-8">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Símbolo Activo</p>
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl font-black text-slate-800 text-center text-xl">${currentCurrency.s}</div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Posición del Símbolo</p>
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl font-black text-slate-800 text-center text-xs">Antes del número</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <button onclick="localStorage.clear(); location.reload();" class="w-full p-4 text-red-400 text-[10px] font-black uppercase tracking-widest">Reiniciar Sistema (Vaciar todo)</button>
+            
+            <div class="mt-10 p-6 bg-red-50 rounded-[2rem] border border-red-100 text-center">
+                 <p class="text-[10px] text-red-400 font-bold mb-4 uppercase">¿Deseas resetear todo el sistema?</p>
+                 <button onclick="localStorage.clear(); location.reload();" class="text-red-600 font-black text-xs uppercase tracking-widest underline decoration-2 underline-offset-4">Vaciar base de datos</button>
+            </div>
         `;
     }
 
-    function setCurrency(code) {
-        const cur = currencies.find(c => c.code === code);
-        localStorage.setItem('elimar_currency', JSON.stringify(cur));
-        changeView('ajustes');
+    function setCurr(id) {
+        currentCurrency = currencies.find(c => c.id === id);
+        save('elimar_curr', currentCurrency);
+        nav('ajustes');
     }
 
     // Inicio
-    changeView('ventas');
+    nav('ventas');
 </script>
 </body>
 </html>
