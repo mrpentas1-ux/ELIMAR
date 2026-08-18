@@ -3,225 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar POS - Versión Facturación Pro</title>
+    <title>ELIMAR INVENTARIOS - TPV</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --blue: #2563eb; --dark: #0f172a; --bg: #f8fafc; --text: #1e293b; --gray: #94a3b8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
+        /* CSS INTERNO REFORZADO - ESTILO LOYVERSE PRO */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        :root { --blue: #2563eb; --dark: #0f172a; --bg: #f1f5f9; --border: #e2e8f0; --text: #334155; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
 
-        /* Estructura Base */
-        aside { width: 280px; background: var(--dark); display: flex; flex-direction: column; padding: 30px 20px; shrink-0; }
-        .logo-box { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
-        .logo-icon { background: var(--blue); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; }
-        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: var(--gray); border: none; background: transparent; cursor: pointer; text-align: left; font-size: 14px; font-weight: 700; border-radius: 12px; }
-        .nav-item.active { background: var(--blue); color: white; }
-        
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; shrink-0; }
-        main { flex: 1; padding: 25px; overflow-y: auto; }
+        /* Barra Lateral (PC) */
+        aside { width: 280px; background: var(--dark); flex-direction: column; padding: 20px; shrink-0; display: none; }
+        .sidebar-btn { width:100%; display:flex; align-items:center; gap:12px; padding:15px; border-radius:12px; color:#94a3b8; border:none; background:none; font-size:14px; font-weight:700; cursor:pointer; text-align:left; }
+        .sidebar-btn.active { background: #1e293b; color: white; border-left: 4px solid var(--blue); }
 
-        /* Selector de Monedas (Arreglado para que se vea profesional) */
-        .curr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
-        .curr-card { background: white; border: 2px solid #f1f5f9; border-radius: 20px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .curr-card.active { border-color: var(--blue); background: #eff6ff; }
-        .curr-card p:first-child { font-weight: 900; font-size: 16px; color: var(--dark); }
-        .curr-card p:nth-child(2) { font-weight: 800; font-size: 16px; color: var(--blue); margin: 2px 0; }
-        .curr-card p:last-child { font-size: 8px; font-weight: 800; color: var(--gray); text-transform: uppercase; }
+        /* Contenedor Principal */
+        .app-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { height: 65px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink-0; }
+        main { flex: 1; padding: 15px; overflow-y: auto; padding-bottom: 100px; }
 
-        /* Secciones de Ajustes */
-        .settings-block { background: white; border-radius: 30px; border: 1px solid #e2e8f0; padding: 25px; margin-bottom: 20px; }
-        .section-title { font-size: 10px; font-weight: 900; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .input-label { font-size: 10px; font-weight: 800; color: var(--gray); margin-bottom: 6px; display: block; }
-        input, select, textarea { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; font-weight: 700; margin-bottom: 15px; outline: none; font-size: 13px; }
-        
-        /* POS & Inventario */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-blue { width: 100%; background: var(--blue); color: white; border: none; padding: 18px; border-radius: 20px; font-weight: 900; cursor: pointer; }
+        /* Punto de Venta */
+        .search-bar { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .search-bar input { border: none; outline: none; width: 100%; font-weight: 600; }
+        .cat-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; }
+        .pill { padding: 8px 15px; border-radius: 20px; background: white; border: 1px solid var(--border); font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; }
+        .pill.active { background: var(--blue); color: white; border-color: var(--blue); }
 
-        /* Mobile Nav */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px 0 25px; justify-content: space-around; z-index: 100; }
-        .m-nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 9px; font-weight: 800; gap: 4px; }
-        .m-nav-item.active { color: var(--blue); }
+        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .prod-card { background: white; border-radius: 20px; padding: 12px; border: 1px solid #f1f5f9; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .prod-initial { aspect-ratio: 1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 8px; }
 
-        @media (max-width: 1024px) { aside { display: none; } .mobile-nav { display: flex; } }
+        /* Barra de Pago Movil */
+        .pay-bar { position: fixed; bottom: 80px; left: 15px; right: 15px; background: white; border-radius: 20px; padding: 15px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; }
+        .btn-pay { width: 100%; background: var(--blue); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 900; font-size: 14px; cursor: pointer; }
+
+        /* Modales */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
+        .modal-body { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 25px; max-h: 92vh; overflow-y: auto; }
+        .input-box { margin-bottom: 15px; }
+        .input-box label { font-size: 10px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .input-box input, .input-box select { width: 100%; padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; font-weight: 700; outline: none; }
+
+        /* Nav Movil */
+        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 25px; }
+        .m-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 9px; font-weight: 800; gap: 4px; }
+        .m-btn.active { color: var(--blue); }
+
+        @media (min-width: 1024px) { aside { display: flex; } .mobile-nav { display: none; } .modal { align-items: center; } .modal-body { border-radius: 30px; } }
     </style>
 </head>
 <body>
 
     <aside>
-        <div class="logo-box"><div class="logo-icon">E</div><div><p style="font-weight: 800; font-size: 14px;">ELIMAR</p><p style="font-size: 9px; color: var(--gray); font-weight: 700;">GESTIÓN POS</p></div></div>
-        <nav class="sidebar-nav">
-            <button onclick="nav('pos')" id="pc-pos" class="nav-item active"><i data-lucide="shopping-cart"></i> Ventas</button>
-            <button onclick="nav('inv')" id="pc-inv" class="nav-item"><i data-lucide="package"></i> Stock</button>
-            <button onclick="nav('tkts')" id="pc-tkts" class="nav-item"><i data-lucide="ticket"></i> Historial</button>
-            <button onclick="nav('reps')" id="pc-reps" class="nav-item"><i data-lucide="bar-chart-3"></i> Informes</button>
-            <button onclick="nav('conf')" id="pc-conf" class="nav-item" style="margin-top: auto;"><i data-lucide="settings"></i> Ajustes</button>
-        </nav>
+        <div style="display:flex; align-items:center; gap:12px; padding-bottom:25px; border-bottom:1px solid #1e293b; margin-bottom:20px;">
+            <div style="background:var(--blue); width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:900;">E</div>
+            <div><p style="color:white; font-weight:800; font-size:14px;">ELIMAR</p><p style="color:#64748b; font-size:9px; font-weight:700;">INVENTARIOS PRO</p></div>
+        </div>
+        <button onclick="nav('pos')" id="p-pos" class="sidebar-btn active"><i data-lucide="shopping-cart"></i> Punto de Venta</button>
+        <button onclick="nav('inv')" id="p-inv" class="sidebar-btn"><i data-lucide="package"></i> Stock & Prendas</button>
+        <button onclick="nav('reps')" id="p-reps" class="sidebar-btn"><i data-lucide="bar-chart-3"></i> Informes</button>
+        <button onclick="nav('conf')" id="p-conf" class="sidebar-btn" style="margin-top:auto;"><i data-lucide="settings"></i> Ajustes</button>
     </aside>
 
-    <div class="main-wrapper">
+    <div class="app-main">
         <header>
-            <h2 id="view-title" style="font-weight: 800; font-size: 18px;">Cargando...</h2>
-            <div id="h-curr-badge" style="background:#eff6ff; color:var(--blue); font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px; border:1px solid #dbeafe;">COP ($)</div>
+            <h2 id="v-title" style="font-weight:800; font-size:16px;">Ventas</h2>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div id="h-curr" style="background:#eff6ff; color:var(--blue); font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px;">COP ($)</div>
+                <div style="width:35px; height:35px; background:#f1f5f9; border-radius:10px; display:flex; align-items:center; justify-content:center;"><i data-lucide="user" size="18"></i></div>
+            </div>
         </header>
-        <main id="main-content"></main>
+
+        <main id="v-content"></main>
+
+        <div id="pay-bar" class="pay-bar">
+            <div style="display:flex; justify-content:space-between; font-weight:900; font-size:18px;">
+                <span id="cart-count">0 prendas</span><span id="cart-total">$ 0</span>
+            </div>
+            <button onclick="openCheckout()" class="btn-pay">COBRAR</button>
+        </div>
+
         <nav class="mobile-nav">
-            <button onclick="nav('pos')" id="m-pos" class="m-nav-item active"><i data-lucide="shopping-cart"></i>VENTAS</button>
-            <button onclick="nav('inv')" id="m-inv" class="m-nav-item"><i data-lucide="package"></i>STOCK</button>
-            <button onclick="nav('tkts')" id="m-tkts" class="m-nav-item"><i data-lucide="ticket"></i>FACTURAS</button>
-            <button onclick="nav('conf')" id="m-conf" class="m-nav-item"><i data-lucide="settings"></i>AJUSTES</button>
+            <button onclick="nav('pos')" id="m-pos" class="m-btn active"><i data-lucide="shopping-cart"></i>VENTAS</button>
+            <button onclick="nav('inv')" id="m-inv" class="m-btn"><i data-lucide="package"></i>STOCK</button>
+            <button onclick="nav('reps')" id="m-reps" class="m-btn"><i data-lucide="bar-chart-3"></i>REPORTES</button>
+            <button onclick="nav('conf')" id="m-conf" class="m-btn"><i data-lucide="settings"></i>AJUSTES</button>
         </nav>
     </div>
 
+    <!-- MODAL SISTEMA -->
+    <div id="modal-bg" class="modal"><div id="modal-container" class="modal-body"></div></div>
+
 <script>
+    // --- LÓGICA DE DATOS ---
     const DB = {
-        save: (key, val) => localStorage.setItem('elimar_'+key, JSON.stringify(val)),
-        get: (key, def) => JSON.parse(localStorage.getItem('elimar_'+key)) || def,
+        save: (k,v) => localStorage.setItem('elimar_'+k, JSON.stringify(v)),
+        get: (k,d) => JSON.parse(localStorage.getItem('elimar_'+k)) || d,
         init() {
-            if(!localStorage.getItem('elimar_config')) {
-                this.save('config', { 
-                    store: "ELIMAR INVENTARIOS", 
-                    nit: "", address: "", tel: "", 
-                    msg: "¡Gracias por su compra!",
-                    currency: {code:'COP', sym:'$', name:'Peso Colombiano'},
-                    taxOn: true, taxRate: 19
-                });
-            }
+            if(!localStorage.getItem('elimar_conf')) this.save('conf', { store:"ELIMAR", curr:{code:'COP', s:'$'}, tax:19 });
             if(!localStorage.getItem('elimar_prods')) this.save('prods', []);
-            if(!localStorage.getItem('elimar_tkts')) this.save('tkts', []);
+            if(!localStorage.getItem('elimar_cats')) this.save('cats', [{id:1, n:'Pijamas', c:'#3b82f6'}]);
         }
     };
     DB.init();
 
     let cart = [];
-    const fmt = (n) => `${DB.get('config').currency.sym}${Math.round(n).toLocaleString()}`;
+    let filterCat = 0;
+    const conf = DB.get('conf');
+    const fmt = (n) => `${conf.curr.s}${Math.round(n).toLocaleString()}`;
 
-    function nav(view) {
-        const c = document.getElementById('main-content');
-        const t = document.getElementById('view-title');
-        const conf = DB.get('config');
+    function nav(v) {
+        const c = document.getElementById('v-content');
+        document.getElementById('v-title').innerText = v.toUpperCase();
+        document.querySelectorAll('.m-btn, .sidebar-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('m-'+v)?.classList.add('active');
+        document.getElementById('p-'+v)?.classList.add('active');
 
-        document.getElementById('h-curr-badge').innerText = `${conf.currency.code} (${conf.currency.sym})`;
-        document.querySelectorAll('.nav-item, .m-nav-item').forEach(b => b.classList.remove('active'));
-        document.getElementById('m-'+view)?.classList.add('active');
-        document.getElementById('pc-'+view)?.classList.add('active');
-
-        if(view === 'pos') renderPOS(c, t);
-        if(view === 'inv') renderInv(c, t);
-        if(view === 'tkts') renderTkts(c, t);
-        if(view === 'conf') renderConf(c, t);
+        if(v==='pos') renderPOS(c);
+        if(v==='inv') renderInv(c);
+        if(v==='conf') renderConf(c);
+        if(v==='reps') c.innerHTML = '<p style="text-align:center; padding:50px;">Reportes cargando...</p>';
         lucide.createIcons();
     }
 
     // --- POS ---
-    function renderPOS(c, t) {
-        t.innerText = "Punto de Venta";
+    function renderPOS(c) {
         const prods = DB.get('prods');
-        const conf = DB.get('config');
-        const sub = cart.reduce((s, i) => s + i.v, 0);
-        const iva = conf.taxOn ? sub * (conf.taxRate/100) : 0;
-        const total = sub + iva;
-
+        const cats = DB.get('cats');
         c.innerHTML = `
-            <div class="grid">${prods.map(p => `<div class="pos-card" onclick="addCart(${p.id})"><div style="background:#eff6ff; color:var(--blue); border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:900; margin-bottom:10px;">${p.n[0]}</div><p style="font-weight:bold; font-size:12px;">${p.n}</p><p style="color:var(--blue); font-weight:900;">${fmt(p.v)}</p></div>`).join('')}</div>
-            <div style="background:white; border-radius:30px; border:1px solid #e2e8f0; padding:25px; margin-top:20px; position:sticky; bottom:0;">
-                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); font-weight:800; margin-bottom:5px;"><span>SUBTOTAL</span><span>${fmt(sub)}</span></div>
-                ${conf.taxOn ? `<div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); font-weight:800; margin-bottom:10px;"><span>IVA (${conf.taxRate}%)</span><span>${fmt(iva)}</span></div>` : ''}
-                <div style="display:flex; justify-content:space-between; font-weight:900; font-size:22px;"><span>TOTAL</span><span>${fmt(total)}</span></div>
-                <button onclick="pagar(${total})" class="btn-pay btn-blue" style="margin-top:15px;" ${cart.length===0?'disabled opacity-30':''}>FINALIZAR VENTA</button>
+            <div class="search-bar"><i data-lucide="search" size="18"></i><input type="text" placeholder="Buscar prenda..."></div>
+            <div class="cat-pills">
+                <button class="pill active">Todo el Catálogo</button>
+                ${cats.map(cat => `<button class="pill">${cat.n}</button>`).join('')}
+            </div>
+            <div class="prod-grid">
+                ${prods.map(p => `
+                    <div class="prod-card" onclick="addCart(${p.id})">
+                        <div class="prod-initial" style="background:${p.col}15; color:${p.col}">${p.n[0]}</div>
+                        <p style="font-weight:700; font-size:11px;">${p.n}</p>
+                        <p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p>
+                    </div>
+                `).join('')}
             </div>
         `;
+        updatePayBar();
     }
 
-    function addCart(id) { const p = DB.get('prods').find(x => x.id === id); if(p.s <= 0) return alert("Agotado"); cart.push({...p}); nav('pos'); }
-    function pagar(total) {
-        const tkts = DB.get('tkts');
-        tkts.unshift({ id: Date.now(), f: new Date().toLocaleString(), t: total, i: [...cart] });
-        DB.save('tkts', tkts);
+    function addCart(id) {
+        const p = DB.get('prods').find(x => x.id === id);
+        if(p.s <= 0) return alert("Agotado");
+        cart.push({...p});
+        updatePayBar();
+    }
+
+    function updatePayBar() {
+        const bar = document.getElementById('pay-bar');
+        if(cart.length > 0) {
+            bar.style.display = 'block';
+            document.getElementById('cart-count').innerText = cart.length + " prendas";
+            document.getElementById('cart-total').innerText = fmt(cart.reduce((s,i)=>s+i.v,0));
+        } else bar.style.display = 'none';
+    }
+
+    // --- INVENTARIO ---
+    function renderInv(c) {
         const prods = DB.get('prods');
-        cart.forEach(it => { const idx = prods.findIndex(x => x.id == it.id); if(idx!=-1) prods[idx].s -= 1; });
-        DB.save('prods', prods);
-        cart = []; alert("Venta registrada"); nav('pos');
-    }
-
-    // --- CONFIGURACIÓN COMPLETA (PASO 7) ---
-    function renderConf(c, t) {
-        t.innerText = "Configuración del Sistema";
-        const conf = DB.get('config');
-        const currs = [
-            {code:'COP', sym:'$', name:'Peso Colombiano'}, {code:'USD', sym:'$', name:'Dólar US'},
-            {code:'EUR', sym:'€', name:'Euro'}, {code:'PEN', sym:'S/', name:'Sol Peruano'},
-            {code:'MXN', sym:'$', name:'Peso Mexicano'}, {code:'CLP', sym:'$', name:'Peso Chileno'}
-        ];
-
         c.innerHTML = `
-            <!-- MONEDA -->
-            <div class="settings-block">
-                <div class="section-title"><i data-lucide="globe" size="14"></i> Moneda Principal</div>
-                <div class="curr-grid">
-                    ${currs.map(cur => `
-                        <div class="curr-card ${conf.currency.code===cur.code?'active':''}" onclick="setCur('${cur.code}')">
-                            <p>${cur.code}</p><p>${cur.sym}</p><p>${cur.name}</p>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button onclick="modalNewCat()" style="flex:1; padding:12px; border-radius:12px; border:none; background:#f97316; color:white; font-weight:800; font-size:10px;">+ CATEGORÍA</button>
+                <button onclick="modalNewProd()" style="flex:1; padding:12px; border-radius:12px; border:none; background:var(--blue); color:white; font-weight:800; font-size:10px;">+ PRENDA</button>
+            </div>
+            <div style="background:white; border-radius:20px; border:1px solid var(--border); overflow:hidden;">
+                ${prods.map(p => `
+                    <div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between; align-items:center;" onclick="modalAdjStock(${p.id})">
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <div style="width:40px; height:40px; background:${p.col}15; color:${p.col}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900;">${p.n[0]}</div>
+                            <div><p style="font-weight:800; font-size:13px;">${p.n}</p><p style="font-size:9px; color:#94a3b8;">SKU: ${p.sku}</p></div>
                         </div>
-                    `).join('')}
-                </div>
+                        <div style="text-align:right;"><p style="font-weight:900;">${fmt(p.v)}</p><p style="font-size:10px; color:${p.s<3?'red':'#16a34a'}; font-weight:800;">${p.s} Uds</p></div>
+                    </div>
+                `).join('')}
             </div>
-
-            <!-- DATOS DE EMPRESA -->
-            <div class="settings-block">
-                <div class="section-title"><i data-lucide="store" size="14"></i> Datos de la Tienda</div>
-                <label class="input-label">Nombre Comercial</label>
-                <input type="text" id="c-store" value="${conf.store}">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div><label class="input-label">NIT / RUT</label><input type="text" id="c-nit" value="${conf.nit}"></div>
-                    <div><label class="input-label">Teléfono</label><input type="text" id="c-tel" value="${conf.tel}"></div>
-                </div>
-                <label class="input-label">Dirección Física</label>
-                <input type="text" id="c-addr" value="${conf.address}">
-            </div>
-
-            <!-- IMPUESTOS -->
-            <div class="settings-block">
-                <div class="section-title"><i data-lucide="percent" size="14"></i> Impuestos e IVA</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <p style="font-weight:700; font-size:13px;">Habilitar cobro de IVA</p>
-                    <input type="checkbox" id="c-tax-on" ${conf.taxOn?'checked':''} style="width:30px; margin:0;">
-                </div>
-                <label class="input-label">Porcentaje de Impuesto (%)</label>
-                <input type="number" id="c-tax-rate" value="${conf.taxRate}">
-            </div>
-
-            <button onclick="saveAllConf()" class="btn-blue" style="margin-bottom:40px;">GUARDAR TODOS LOS CAMBIOS</button>
         `;
     }
 
-    function setCur(code) {
-        const currs = [{code:'COP', sym:'$', name:'Peso Colombiano'}, {code:'USD', sym:'$', name:'Dólar US'}, {code:'EUR', sym:'€', name:'Euro'}, {code:'PEN', sym:'S/', name:'Sol Peruano'}, {code:'MXN', sym:'$', name:'Peso Mexicano'}, {code:'CLP', sym:'$', name:'Peso Chileno'}];
-        const conf = DB.get('config');
-        conf.currency = currs.find(c => c.code === code);
-        DB.save('config', conf);
-        nav('conf');
+    // --- MODALES ---
+    function modalNewProd() {
+        const cats = DB.get('cats');
+        document.getElementById('modal-bg').style.display = 'flex';
+        document.getElementById('modal-container').innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h3 style="font-weight:900;">Nueva Prenda</h3><button onclick="closeM()" style="border:none; background:none; font-weight:900; color:red;">Cerrar</button></div>
+            <div class="input-box"><label>Nombre del Modelo</label><input type="text" id="n-n"></div>
+            <div class="input-box"><label>Categoría</label><select id="n-c">${cats.map(cat=>`<option value="${cat.id}">${cat.n}</option>`).join('')}</select></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="input-box"><label>Venta</label><input type="number" id="n-v" oninput="calcM()"></div>
+                <div class="input-box"><label>Costo</label><input type="number" id="n-co" oninput="calcM()"></div>
+            </div>
+            <p id="margen-label" style="font-size:11px; font-weight:800; color:#16a34a; margin-bottom:15px;">Margen: 0%</p>
+            <button onclick="saveProd()" class="btn-pay">REGISTRAR PRENDA</button>
+        `;
     }
 
-    function saveAllConf() {
-        const conf = DB.get('config');
-        conf.store = document.getElementById('c-store').value;
-        conf.nit = document.getElementById('c-nit').value;
-        conf.tel = document.getElementById('c-tel').value;
-        conf.address = document.getElementById('c-addr').value;
-        conf.taxOn = document.getElementById('c-tax-on').checked;
-        conf.taxRate = parseFloat(document.getElementById('c-tax-rate').value) || 0;
-        DB.save('config', conf);
-        alert("¡Configuración actualizada con éxito!");
-        nav('conf');
+    function calcM() {
+        const v = parseFloat(document.getElementById('n-v').value) || 0;
+        const co = parseFloat(document.getElementById('n-co').value) || 0;
+        const m = v > 0 ? ((v-co)/v)*100 : 0;
+        document.getElementById('margen-label').innerText = `Margen estimado: ${m.toFixed(1)}%`;
     }
 
-    // Funciones básicas de soporte
-    function renderInv(c,t) { t.innerText="Stock"; c.innerHTML=`<div style="background:white; border-radius:25px; border:1px solid #e2e8f0; overflow:hidden;">${DB.get('prods').map(p=>`<div style="padding:15px; border-bottom:1px solid #f8fafc; display:flex; justify-content:space-between;"><div><p style="font-weight:800;">${p.n}</p><p style="font-size:9px; color:var(--gray);">Stock: ${p.s}</p></div><p style="font-weight:900; color:var(--blue);">${fmt(p.v)}</p></div>`).join('')}</div>`; }
-    function renderTkts(c,t) { t.innerText="Historial"; c.innerHTML=DB.get('tkts').map(tk=>`<div style="background:white; padding:15px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:10px; display:flex; justify-content:space-between;"><div><p style="font-weight:800;">TKT-${tk.id.toString().slice(-4)}</p><p style="font-size:9px; color:var(--gray);">${tk.f}</p></div><p style="font-weight:900;">${fmt(tk.t)}</p></div>`).join(''); }
+    function saveProd() {
+        const n = document.getElementById('n-n').value;
+        const v = parseFloat(document.getElementById('n-v').value);
+        if(!n || isNaN(v)) return;
+        const prods = DB.get('prods');
+        prods.push({ id: Date.now(), n, v, s: 0, col: '#3b82f6', sku: 'CLO-'+Math.floor(Math.random()*9000) });
+        DB.save('prods', prods);
+        closeM(); nav('inv');
+    }
 
+    function modalAdjStock(id) {
+        const p = DB.get('prods').find(x => x.id === id);
+        document.getElementById('modal-bg').style.display = 'flex';
+        document.getElementById('modal-container').innerHTML = `
+            <h3 style="font-weight:900; margin-bottom:10px;">${p.n}</h3>
+            <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">Stock Actual: ${p.s} Uds</p>
+            <div class="input-box"><label>Sumar Cantidad</label><input type="number" id="adj-s" placeholder="Ej: 10"></div>
+            <button onclick="saveAdj(${id})" class="btn-pay">ACTUALIZAR STOCK</button>
+        `;
+    }
+
+    function saveAdj(id) {
+        const adj = parseInt(document.getElementById('adj-s').value) || 0;
+        const prods = DB.get('prods');
+        const pi = prods.findIndex(x => x.id == id);
+        prods[pi].s += adj;
+        DB.save('prods', prods);
+        closeM(); nav('inv');
+    }
+
+    function closeM() { document.getElementById('modal-bg').style.display = 'none'; }
     window.onload = () => nav('pos');
 </script>
 </body>
