@@ -3,465 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elimar Inventarios PRO</title>
+    <title>Elimar POS - Profesional</title>
+    
+    <!-- Cargamos Tailwind para que se vea con el diseño del video -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-        .sidebar-item-active { background: #f1f5f9; color: #2563eb; border-left: 4px solid #2563eb; }
-        .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Estilo para los botones activos */
+        .sidebar-active { background: #1e293b; color: #3b82f6; border-left: 4px solid #3b82f6; }
+        .mobile-active { color: #2563eb; }
+
+        /* Escondemos el scroll */
         ::-webkit-scrollbar { display: none; }
-        input:focus, select:focus { outline: none; border-color: #3b82f6; ring: 2px #3b82f6; }
+
+        /* Efecto de cristal para el header */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 1);
+        }
     </style>
 </head>
-<body class="bg-[#f8fafc] h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
+<body class="h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
 
-    <!-- SIDEBAR (PC) -->
-    <aside id="sidebar" class="hidden lg:flex w-72 bg-[#0f172a] text-white flex-col shrink-0 z-50">
-        <div class="p-6 border-b border-slate-800">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl">E</div>
+    <!-- 1. BARRA LATERAL (Solo para Computadora) -->
+    <aside class="hidden lg:flex w-72 bg-[#0f172a] text-white flex-col shrink-0 shadow-2xl">
+        <div class="p-8 border-b border-slate-800">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg shadow-blue-500/20">E</div>
                 <div>
-                    <h1 class="font-black text-sm tracking-tight leading-none uppercase">Elimar Inventarios</h1>
-                    <p class="text-[9px] text-slate-500 font-bold uppercase mt-1">Sistema TPV & Gestión</p>
+                    <h1 class="font-black text-sm tracking-tight leading-none uppercase">Elimar</h1>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase mt-1 tracking-widest">Inventarios PRO</p>
                 </div>
             </div>
         </div>
-        <nav class="flex-1 py-4 space-y-1">
-            <button onclick="nav('pos')" id="d-pos" class="w-full flex items-center gap-4 px-6 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
+        
+        <nav class="flex-1 py-6 space-y-1">
+            <button onclick="nav('pos')" id="pc-pos" class="sidebar-active w-full flex items-center gap-4 px-8 py-4 text-white font-bold text-sm hover:bg-slate-800 transition-all">
                 <i data-lucide="shopping-cart" size="20"></i> Punto de Venta
             </button>
-            <button onclick="nav('inv')" id="d-inv" class="w-full flex items-center gap-4 px-6 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
+            <button onclick="nav('inv')" id="pc-inv" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
                 <i data-lucide="package" size="20"></i> Inventario & Prendas
             </button>
-            <button onclick="nav('tkts')" id="d-tkts" class="w-full flex items-center gap-4 px-6 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
+            <button onclick="nav('tkts')" id="pc-tkts" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
                 <i data-lucide="ticket" size="20"></i> Historial Tickets
             </button>
-            <button onclick="nav('clts')" id="d-clts" class="w-full flex items-center gap-4 px-6 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
+            <button onclick="nav('clts')" id="pc-clts" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
                 <i data-lucide="users" size="20"></i> Clientes & Puntos
             </button>
-            <button onclick="nav('reps')" id="d-reps" class="w-full flex items-center gap-4 px-4 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
+            <button onclick="nav('reps')" id="pc-reps" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all">
                 <i data-lucide="bar-chart-3" size="20"></i> Informes & Ventas
             </button>
-            <button onclick="nav('conf')" id="d-conf" class="w-full flex items-center gap-4 px-6 py-3 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all mt-auto">
+            <button onclick="nav('conf')" id="pc-conf" class="w-full flex items-center gap-4 px-8 py-4 text-slate-400 font-bold text-sm hover:bg-slate-800 transition-all mt-auto">
                 <i data-lucide="settings" size="20"></i> Configuración
             </button>
         </nav>
     </aside>
 
-    <!-- MOBILE NAV -->
-    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t flex justify-around p-2 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
-        <button onclick="nav('pos')" id="m-pos" class="flex flex-col items-center p-2 text-slate-400"><i data-lucide="shopping-cart" size="20"></i><span class="text-[9px] font-bold mt-1 uppercase">POS</span></button>
-        <button onclick="nav('inv')" id="m-inv" class="flex flex-col items-center p-2 text-slate-400"><i data-lucide="package" size="20"></i><span class="text-[9px] font-bold mt-1 uppercase">Stock</span></button>
-        <button onclick="nav('tkts')" id="m-tkts" class="flex flex-col items-center p-2 text-slate-400"><i data-lucide="ticket" size="20"></i><span class="text-[9px] font-bold mt-1 uppercase">Tickets</span></button>
-        <button onclick="nav('reps')" id="m-reps" class="flex flex-col items-center p-2 text-slate-400"><i data-lucide="bar-chart-3" size="20"></i><span class="text-[9px] font-bold mt-1 uppercase">Informes</span></button>
-        <button onclick="nav('conf')" id="m-conf" class="flex flex-col items-center p-2 text-slate-400"><i data-lucide="settings" size="20"></i><span class="text-[9px] font-bold mt-1 uppercase">Ajustes</span></button>
+    <!-- 2. BARRA INFERIOR (Solo para Celular) -->
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t flex justify-around p-3 z-50 shadow-[0_-10px_25px_rgba(0,0,0,0.05)]">
+        <button onclick="nav('pos')" id="m-pos" class="mobile-active flex flex-col items-center gap-1 transition-all">
+            <i data-lucide="shopping-cart" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">POS</span>
+        </button>
+        <button onclick="nav('inv')" id="m-inv" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
+            <i data-lucide="package" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Inventario</span>
+        </button>
+        <button onclick="nav('reps')" id="m-reps" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
+            <i data-lucide="bar-chart-3" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Informes</span>
+        </button>
+        <button onclick="nav('conf')" id="m-conf" class="text-slate-400 flex flex-col items-center gap-1 transition-all">
+            <i data-lucide="settings" size="20"></i><span class="text-[9px] font-extrabold uppercase tracking-widest">Ajustes</span>
+        </button>
     </nav>
 
-    <!-- ÁREA DE CONTENIDO -->
-    <div class="flex-1 flex flex-col min-w-0">
-        <header class="h-16 bg-white border-b px-4 lg:px-8 flex items-center justify-between shrink-0 sticky top-0 z-40">
+    <!-- 3. ÁREA DE CONTENIDO -->
+    <div class="flex-1 flex flex-col min-w-0 h-full">
+        <!-- HEADER SUPERIOR -->
+        <header class="h-20 glass-header px-6 lg:px-10 flex items-center justify-between shrink-0 sticky top-0 z-40">
+            <h2 id="view-title" class="font-extrabold text-slate-800 text-xl tracking-tight">Punto de Venta</h2>
+            
             <div class="flex items-center gap-4">
-                <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-600"><i data-lucide="menu"></i></button>
-                <h2 id="view-title" class="font-extrabold text-slate-800 text-lg">Punto de Venta</h2>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-600 flex items-center gap-1" id="header-currency">COP ($)</div>
-                <div class="w-10 h-10 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-600"><i data-lucide="user" size="18"></i></div>
+                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm" id="header-curr">COP ($)</div>
+                <div class="w-11 h-11 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center text-slate-600 shadow-sm">
+                    <i data-lucide="user" size="20"></i>
+                </div>
             </div>
         </header>
 
-        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-8 pb-24 lg:pb-8">
-            <!-- Vistas dinámicas aquí -->
+        <!-- CONTENEDOR DINÁMICO -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 lg:p-10 pb-24 lg:pb-10">
+            <!-- Cargando contenido... -->
+            <div class="h-full flex flex-col items-center justify-center opacity-20">
+                <i data-lucide="loader-2" class="animate-spin mb-4" size="48"></i>
+                <p class="font-bold uppercase tracking-[0.2em] text-xs">Cargando Sistema...</p>
+            </div>
         </main>
     </div>
 
-    <!-- MODALES GENÉRICOS -->
-    <div id="modal-bg" class="hidden fixed inset-0 modal-overlay z-[100] flex items-center justify-center p-4">
-        <div id="modal-content" class="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-            <!-- Contenido del modal -->
-        </div>
-    </div>
+    <script>
+        // Función para cambiar de pantalla
+        function nav(view) {
+            const container = document.getElementById('main-content');
+            const title = document.getElementById('view-title');
+            
+            // 1. Estilos de navegación
+            document.querySelectorAll('nav button, aside button').forEach(b => {
+                b.classList.remove('sidebar-active', 'mobile-active', 'text-white', 'text-blue-600');
+                b.classList.add('text-slate-400');
+            });
+            document.getElementById('m-'+view)?.classList.add('mobile-active');
+            document.getElementById('pc-'+view)?.classList.add('sidebar-active', 'text-white');
 
-<script>
-    // --- MOTOR DE DATOS ---
-    const DB = {
-        get: (key, def) => JSON.parse(localStorage.getItem('elimar_'+key)) || def,
-        save: (key, val) => localStorage.setItem('elimar_'+key, JSON.stringify(val)),
-        init() {
-            if(!localStorage.getItem('elimar_config')) {
-                this.save('config', { storeName: "ELIMAR INVENTARIOS", nit: "", address: "", currency: {code:'COP', s:'$'}, tax: 19 });
-                this.save('cats', [{id: 1, n: 'Camisetas & Polos', c: '#3b82f6'}]);
-                this.save('prods', []);
-                this.save('tkts', []);
-                this.save('clts', []);
-            }
+            // 2. Títulos
+            const labels = {
+                pos: 'Punto de Venta',
+                inv: 'Inventario & Prendas',
+                tkts: 'Historial de Tickets',
+                clts: 'Clientes & Puntos',
+                reps: 'Informes & Ganancias',
+                conf: 'Configuración del POS'
+            };
+            title.innerText = labels[view];
+
+            // 3. Contenido Temporal (Professional Placeholder)
+            container.innerHTML = `
+                <div class="bg-white rounded-[2.5rem] border border-slate-200 p-12 text-center shadow-sm">
+                    <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-200">
+                        <i data-lucide="layout" size="40"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 mb-2">Pantalla de ${labels[view]}</h3>
+                    <p class="text-slate-400 text-sm max-w-xs mx-auto">Esta sección está lista para recibir los módulos funcionales en el siguiente paso.</p>
+                </div>
+            `;
+            
+            lucide.createIcons();
         }
-    };
 
-    DB.init();
-
-    let state = {
-        view: 'pos',
-        cart: [],
-        filterCat: 0,
-        currency: DB.get('config').currency
-    };
-
-    // --- NAVEGACIÓN ---
-    function nav(v) {
-        state.view = v;
-        const c = document.getElementById('main-content');
-        const t = document.getElementById('view-title');
-        
-        document.querySelectorAll('nav button, aside button').forEach(b => {
-            b.classList.remove('sidebar-item-active', 'text-blue-600');
-            b.classList.add('text-slate-400');
-        });
-        document.getElementById('m-'+v)?.classList.add('text-blue-600');
-        document.getElementById('d-'+v)?.classList.add('sidebar-item-active');
-
-        if(v === 'pos') renderPOS(c, t);
-        if(v === 'inv') renderInv(c, t);
-        if(v === 'tkts') renderTkts(c, t);
-        if(view === 'clts') renderClts(c, t); // Se agregó soporte para clientes
-        if(v === 'reps') renderReps(c, t);
-        if(v === 'conf') renderConf(c, t);
-        
-        lucide.createIcons();
-    }
-
-    // Formateador de moneda
-    const fmt = (n) => `${state.currency.s} ${Math.round(n).toLocaleString()}`;
-
-    // --- VISTA POS (FOTO 6) ---
-    function renderPOS(c, t) {
-        t.innerText = "Punto de Venta";
-        const cats = DB.get('cats');
-        const prods = DB.get('prods').filter(p => state.filterCat == 0 || p.catId == state.filterCat);
-        const subtotal = state.cart.reduce((s, i) => s + i.v, 0);
-        const iva = subtotal * (DB.get('config').tax / 100);
-        const total = subtotal + iva;
-
-        c.innerHTML = `
-            <div class="flex flex-col lg:flex-row gap-6 h-full">
-                <div class="flex-1">
-                    <div class="flex gap-2 overflow-x-auto pb-4 mb-4">
-                        <button onclick="state.filterCat=0;nav('pos')" class="px-4 py-2 rounded-full font-bold text-xs shrink-0 ${state.filterCat==0?'bg-blue-600 text-white shadow-lg shadow-blue-200':'bg-white border text-slate-500'}">Todo el Catálogo</button>
-                        ${cats.map(cat => `
-                            <button onclick="state.filterCat=${cat.id};nav('pos')" class="px-4 py-2 rounded-full font-bold text-xs shrink-0 ${state.filterCat==cat.id?'bg-blue-600 text-white shadow-lg shadow-blue-200':'bg-white border text-slate-500'}">${cat.n}</button>
-                        `).join('')}
-                    </div>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                        ${prods.map(p => `
-                            <div onclick="addCart(${p.id})" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm active:scale-95 transition cursor-pointer">
-                                <div class="aspect-square rounded-2xl mb-3 flex items-center justify-center text-4xl font-black text-slate-200" style="background: ${p.catColor}20; color: ${p.catColor}">${p.n[0]}</div>
-                                <h3 class="font-bold text-xs text-slate-700 h-8 line-clamp-2">${p.n}</h3>
-                                <p class="text-blue-600 font-black text-sm mt-1">${fmt(p.v)}</p>
-                            </div>
-                        `).join('')}
-                        <div onclick="vManual()" class="border-2 border-dashed rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 cursor-pointer hover:bg-slate-50">
-                            <i data-lucide="plus-circle" size="32"></i><span class="text-[10px] font-bold mt-2 uppercase">Venta Manual</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="w-full lg:w-96 bg-white rounded-[2.5rem] border shadow-xl p-6 flex flex-col sticky bottom-4 h-fit">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Ticket de Venta</h3>
-                    <div class="flex-1 min-h-[100px] max-h-48 overflow-y-auto space-y-3 mb-6">
-                        ${state.cart.length==0 ? '<p class="text-center text-slate-300 py-10 italic text-sm">Carrito vacío</p>' : ''}
-                        ${state.cart.map((i, idx) => `
-                            <div class="flex justify-between items-center text-xs font-bold">
-                                <span>${i.n}</span>
-                                <div class="flex items-center gap-3">
-                                    <span>${fmt(i.v)}</span>
-                                    <button onclick="remCart(${idx})" class="text-red-400"><i data-lucide="x" size="14"></i></button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="border-t pt-4 space-y-1">
-                        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase"><span>Subtotal</span><span>${fmt(subtotal)}</span></div>
-                        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase"><span>IVA (${DB.get('config').tax}%)</span><span>${fmt(iva)}</span></div>
-                        <div class="flex justify-between text-2xl font-black text-slate-900 pt-2 tracking-tighter"><span>TOTAL</span><span>${fmt(total)}</span></div>
-                    </div>
-                    <button onclick="finishSale(${total})" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-sm mt-6 shadow-xl shadow-blue-200 active:bg-blue-800 disabled:opacity-20" ${state.cart.length==0?'disabled':''}>COBRAR</button>
-                </div>
-            </div>
-        `;
-    }
-
-    function addCart(id) {
-        const p = DB.get('prods').find(x => x.id === id);
-        if(p.s <= 0) return alert("Producto agotado");
-        state.cart.push({...p});
-        nav('pos');
-    }
-    function remCart(idx) { state.cart.splice(idx,1); nav('pos'); }
-
-    function finishSale(total) {
-        const tkt = { id: Date.now(), f: new Date().toLocaleString(), t: total, i: [...state.cart] };
-        const tkts = DB.get('tkts'); tkts.unshift(tkt); DB.save('tkts', tkts);
-        
-        // Descontar stock
-        const prods = DB.get('prods');
-        state.cart.forEach(item => {
-            const pi = prods.findIndex(x => x.id == item.id);
-            if(pi != -1) prods[pi].s -= 1;
-        });
-        DB.save('prods', prods);
-        
-        state.cart = [];
-        alert("¡Venta Exitosa!");
-        nav('pos');
-    }
-
-    // --- VISTA INVENTARIO (FOTO 5) ---
-    function renderInv(c, t) {
-        t.innerText = "Control de Inventario";
-        const prods = DB.get('prods');
-        c.innerHTML = `
-            <div class="bg-white rounded-[2rem] border shadow-sm p-6 overflow-hidden">
-                <div class="flex flex-wrap gap-4 mb-8 justify-between items-center">
-                    <div class="flex gap-2">
-                        <button onclick="newCatModal()" class="bg-orange-500 text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase shadow-lg shadow-orange-100">+ Nueva Categoría</button>
-                        <button onclick="newProdModal()" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase shadow-lg shadow-blue-100">+ Nueva Prenda</button>
-                    </div>
-                </div>
-                <div class="divide-y border rounded-3xl overflow-hidden">
-                    ${prods.length==0 ? '<p class="p-20 text-center text-slate-300 font-bold italic">No hay productos. Agrega uno arriba.</p>':''}
-                    ${prods.map(p => `
-                        <div class="p-5 flex items-center justify-between hover:bg-slate-50 transition">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-slate-300" style="background: ${p.catColor}20; color: ${p.catColor}">${p.n[0]}</div>
-                                <div><p class="font-bold text-sm text-slate-800">${p.n}</p><p class="text-[9px] text-slate-400 font-bold uppercase">SKU: ${p.sku}</p></div>
-                            </div>
-                            <div class="flex gap-8 text-right items-center">
-                                <div class="hidden sm:block"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Costo</p><p class="text-sm font-bold text-slate-600">${fmt(p.c)}</p></div>
-                                <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Venta</p><p class="text-sm font-black text-blue-600">${fmt(p.v)}</p></div>
-                                <div class="border-l pl-8"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Stock</p><p class="text-xl font-black ${p.s<3?'text-red-500':'text-slate-800'}">${p.s}</p></div>
-                                <button onclick="delProd(${p.id})" class="text-red-300 hover:text-red-500 ml-4"><i data-lucide="trash-2" size="18"></i></button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-        lucide.createIcons();
-    }
-
-    // --- VISTA TICKETS (FOTO 3) ---
-    function renderTkts(c, t) {
-        t.innerText = "Historial de Tickets";
-        const tkts = DB.get('tkts');
-        c.innerHTML = `
-            <div class="space-y-4">
-                ${tkts.map(tk => `
-                    <div class="bg-white p-6 rounded-[2rem] border shadow-sm flex justify-between items-center hover:border-blue-200 transition cursor-pointer">
-                        <div class="flex items-center gap-5">
-                            <div class="w-12 h-12 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center"><i data-lucide="check-circle-2"></i></div>
-                            <div><p class="font-black text-slate-800 text-sm">Ticket #${tk.id.toString().slice(-4)}</p><p class="text-[10px] text-slate-400 font-bold uppercase">${tk.f}</p></div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xl font-black text-slate-900">${fmt(tk.t)}</p>
-                            <span class="text-[9px] bg-green-100 text-green-700 px-3 py-1 rounded-full font-black tracking-widest uppercase">COBRADO</span>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    // --- VISTA INFORMES (FOTO 2) ---
-    function renderReps(c, t) {
-        t.innerText = "Informes & Analítica";
-        const tkts = DB.get('tkts');
-        const gross = tkts.reduce((s, tk) => s + tk.t, 0);
-        let profit = 0;
-        tkts.forEach(tk => tk.i.forEach(it => profit += (it.v - it.c)));
-
-        c.innerHTML = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm text-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 leading-none">Ventas Totales Brutas</p>
-                    <p class="text-4xl font-black text-slate-900 tracking-tighter">${fmt(gross)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase">${tkts.length} tickets cobrados</p>
-                </div>
-                <div class="bg-blue-600 p-8 rounded-[2.5rem] shadow-2xl shadow-blue-100 text-center text-white">
-                    <p class="text-[10px] font-black opacity-60 uppercase tracking-[0.2em] mb-2 leading-none">Utilidad Neta Estimada</p>
-                    <p class="text-4xl font-black tracking-tighter">${fmt(profit)}</p>
-                    <p class="text-[10px] font-bold opacity-60 mt-2 uppercase">Margen de Ganancia: ~${gross ? Math.round((profit/gross)*100):0}%</p>
-                </div>
-            </div>
-            <div class="bg-white rounded-[2rem] border p-8"><p class="text-slate-300 italic text-center font-bold">Resumen de Medios de Pago (Próximamente)</p></div>
-        `;
-    }
-
-    // --- VISTA CONFIGURACIÓN (FOTO 1) ---
-    function renderConf(c, t) {
-        t.innerText = "Ajustes de Tienda & Moneda";
-        const config = DB.get('config');
-        const activeCur = state.currency;
-        
-        c.innerHTML = `
-            <div class="bg-white rounded-[2.5rem] border shadow-sm p-8 max-w-4xl mx-auto space-y-10">
-                <section>
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="globe" size="20"></i></div>
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Moneda & Divisa del TPV</h3>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        ${[
-                            {code:'COP',s:'$',n:'Peso Colombiano'},
-                            {code:'USD',s:'$',n:'Dólar EE.UU'},
-                            {code:'EUR',s:'€',n:'Euro (€)'},
-                            {code:'MXN',s:'$',n:'Peso Mexicano'},
-                            {code:'PEN',s:'S/',n:'Sol Peruano'},
-                            {code:'CLP',s:'$',n:'Peso Chileno'},
-                            {code:'ARS',s:'$',n:'Peso Argentino'}
-                        ].map(cur => `
-                            <div onclick="setCur('${cur.code}','${cur.s}','${cur.n}')" class="p-5 border-2 rounded-3xl text-center cursor-pointer transition-all ${activeCur.code==cur.code?'border-blue-600 bg-blue-50 ring-2 ring-blue-100':'border-slate-100'}">
-                                <p class="text-xl font-black text-slate-900">${cur.code}</p>
-                                <p class="text-xl font-bold text-blue-600 leading-none my-1">${cur.s}</p>
-                                <p class="text-[9px] text-slate-400 font-black uppercase leading-tight h-6 flex items-center justify-center">${cur.n}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </section>
-
-                <section class="border-t pt-10">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="p-2 bg-slate-50 text-slate-600 rounded-xl"><i data-lucide="store" size="20"></i></div>
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Datos de la Tienda</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Nombre Tienda</label><input type="text" id="conf-name" value="${config.storeName}" class="w-full bg-slate-50 border p-4 rounded-2xl font-bold"></div>
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">NIT / RUT</label><input type="text" id="conf-nit" value="${config.nit}" class="w-full bg-slate-50 border p-4 rounded-2xl font-bold"></div>
-                        <div class="md:col-span-2"><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Dirección</label><input type="text" id="conf-addr" value="${config.address}" class="w-full bg-slate-50 border p-4 rounded-2xl font-bold"></div>
-                    </div>
-                    <button onclick="saveConf()" class="mt-8 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-blue-100">Guardar Cambios</button>
-                </section>
-
-                <button onclick="localStorage.clear(); location.reload();" class="w-full p-4 text-red-400 text-[10px] font-black uppercase tracking-widest underline decoration-2 underline-offset-8 mt-10">Resetear Todo el Sistema</button>
-            </div>
-        `;
-    }
-
-    function setCur(c, s, n) { 
-        state.currency = {code:c, s:s, n:n}; 
-        const config = DB.get('config'); config.currency = state.currency; DB.save('config', config);
-        nav('conf'); 
-    }
-    function saveConf() {
-        const config = DB.get('config');
-        config.storeName = document.getElementById('conf-name').value;
-        config.nit = document.getElementById('conf-nit').value;
-        config.address = document.getElementById('conf-addr').value;
-        DB.save('config', config);
-        alert("Configuración guardada");
-        location.reload();
-    }
-
-    // --- MODALES ---
-    function showModal(html) {
-        document.getElementById('modal-content').innerHTML = html;
-        document.getElementById('modal-bg').classList.remove('hidden');
-        lucide.createIcons();
-    }
-    function hideModal() { document.getElementById('modal-bg').classList.add('hidden'); }
-
-    function newCatModal() {
-        showModal(`
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h3 class="font-black text-xl tracking-tight">Nueva Categoría</h3>
-                    <button onclick="hideModal()"><i data-lucide="x"></i></button>
-                </div>
-                <input type="text" id="new-cat-n" placeholder="Ej: Vestidos, Jeans..." class="w-full p-5 bg-slate-50 border rounded-[1.5rem] font-bold mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Color de Identificación</p>
-                <div class="grid grid-cols-6 gap-3 mb-10">
-                    ${['#3b82f6','#ef4444','#22c55e','#f59e0b','#8b5cf6','#ec4899','#64748b','#0f172a'].map(c => `
-                        <div onclick="this.parentElement.querySelectorAll('div').forEach(d=>d.innerHTML=''); this.innerHTML='<i data-lucide=\\'check\\' class=\\'text-white\\' size=\\'16\\'></i>'; this.dataset.color='${c}'" 
-                        class="aspect-square rounded-xl flex items-center justify-center cursor-pointer border" style="background:${c}"></div>
-                    `).join('')}
-                </div>
-                <button onclick="saveCat()" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-xs">Crear Categoría</button>
-            </div>
-        `);
-    }
-
-    function saveCat() {
-        const n = document.getElementById('new-cat-n').value;
-        const colorDiv = document.querySelector('[data-color] i')?.parentElement;
-        const c = colorDiv ? colorDiv.dataset.color : '#3b82f6';
-        if(!n) return;
-        const cats = DB.get('cats'); cats.push({id: Date.now(), n, c}); DB.save('cats', cats);
-        hideModal(); nav('inv');
-    }
-
-    function newProdModal() {
-        const cats = DB.get('cats');
-        showModal(`
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h3 class="font-black text-xl tracking-tight">Nueva Prenda de Vestir</h3>
-                    <button onclick="hideModal()"><i data-lucide="x"></i></button>
-                </div>
-                <div class="space-y-6">
-                    <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Nombre del Modelo</label><input type="text" id="p-n" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Categoría</label>
-                        <select id="p-cat" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold appearance-none">
-                            ${cats.map(c => `<option value="${c.id}">${c.n}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Costo ($)</label><input type="number" id="p-c" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
-                        <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Venta ($)</label><input type="number" id="p-v" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
-                    </div>
-                    <div><label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Stock Inicial</label><input type="number" id="p-s" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold"></div>
-                </div>
-                <button onclick="saveProd()" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-xs mt-10">Guardar Prenda</button>
-            </div>
-        `);
-    }
-
-    function saveProd() {
-        const n = document.getElementById('p-n').value;
-        const catId = document.getElementById('p-cat').value;
-        const c = parseFloat(document.getElementById('p-c').value);
-        const v = parseFloat(document.getElementById('p-v').value);
-        const s = parseInt(document.getElementById('p-s').value);
-        if(!n || isNaN(v)) return;
-        
-        const cat = DB.get('cats').find(x => x.id == catId);
-        const prods = DB.get('prods');
-        prods.push({ id: Date.now(), n, catId, catColor: cat.c, c, v, s, sku: 'CLO-'+Math.floor(1000+Math.random()*9000) });
-        DB.save('prods', prods);
-        hideModal(); nav('inv');
-    }
-
-    function delProd(id) {
-        if(confirm("¿Eliminar este producto?")) {
-            let prods = DB.get('prods');
-            prods = prods.filter(x => x.id !== id);
-            DB.save('prods', prods);
-            nav('inv');
-        }
-    }
-
-    function vManual() {
-        const val = prompt("Valor de la venta manual:");
-        if(val && !isNaN(val)) {
-            state.cart.push({ id: 0, n: "Venta Manual", v: parseFloat(val), c: 0 });
-            nav('pos');
-        }
-    }
-
-    // --- INICIALIZACIÓN ---
-    nav('pos');
-</script>
+        // Iniciar en POS al cargar
+        window.onload = () => {
+            lucide.createIcons();
+            setTimeout(() => nav('pos'), 500);
+        };
+    </script>
 </body>
 </html>
